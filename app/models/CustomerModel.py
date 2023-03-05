@@ -1,9 +1,8 @@
 from app.config import db, app
-from app.logger import Logger
-from app.utils import databaseResponseModel
-from typing import Optional
 
-log = Logger()
+# import os,sys
+# sys.path.insert(1, os.path.join(sys.path[0], '../'))
+# from config import app, db
 
 class Customer(db.Model):
     __tablename__ = 'customer'
@@ -14,38 +13,81 @@ class Customer(db.Model):
     username = db.Column(db.String(64), default="N/A")
     dateLogin = db.Column(db.String(64), default="N/A")
     refCode = db.Column(db.String(64), default="N/A")
-
-    # api_hash = db.Column(db.String(128), nullable=False)
-    # phone = db.Column(db.String(32), nullable=False)
-    # username = db.Column(db.String(128), nullable=False)
-    # host = db.Column(db.String(32), nullable=True)
-    # port = db.Column(db.String(32), nullable=True)
-    # public_key = db.Column(db.String(512), nullable=True)
+    location = db.Column(db.String, nullable=True)
+    comment = db.Column(db.String, nullable=True)
+    contact = db.Column(db.String, nullable=True)
+    # cart = db.Column(db.PickleType)
 
     def __repr__(self):
         return '<Account %r>' % self.username
 
-def addCustomer(chatId: int, username: str, dateLogin: str, refCode: str):
+def addCustomer(chatId: int, username: str, dateLogin: str):
     try:
         with app.app_context():
             if Customer.query.filter_by(chatId=chatId).first():
-                return {"message": 'User already added'}
+                return 0
             else:
                 customer = Customer(chatId=chatId, username=username, dateLogin=dateLogin,
-                                    refCode=refCode, language='N/A')
+                                    language='RU')
                 db.session.add(customer)
                 db.session.commit()
 
-            return {"message": 'Customer added', "name": customer.chatId}
+            return 1
     except Exception as e:
         return print(e, "\naddCustomer error")
 
+def getCustomer(chatId: int):
+    try:
+        with app.app_context():
+            if Customer.query.filter_by(chatId=chatId).first():
+                customer = Customer.query.filter_by(chatId=chatId).first()
+                return customer
+            else:
+                return {"message": 'No user with this chatId', "status": False}
+
+    except Exception as e:
+        return print(e, "\ngetCustomer error")
+
+def getAllCustomers():
+    try:
+        with app.app_context():
+
+            return Customer.query.filter(Customer.id is not None).all()
+
+    except Exception as e:
+        return print(e, "\ngetAllCustomers error")
+
+
+def setRef(chatId, refCode):
+    try:
+        with app.app_context():
+            if Customer.query.filter_by(chatId=chatId).first():
+                customer = Customer.query.filter_by(chatId=chatId).first()
+                customer.refCode = refCode
+                db.session.commit()
+                return {"message": f'Language set is{customer.language}', "status": True}
+            else:
+                return {"message": 'No user with this chatId', "status": False}
+
+    except Exception as e:
+        return print(e, "\nsetLanguage error")
+def getRef(chatId):
+    try:
+        with app.app_context():
+            if Customer.query.filter_by(chatId=chatId).first():
+                customer = Customer.query.filter_by(chatId=chatId).first()
+                return customer.refCode
+            else:
+                return {"message": 'No user with this chatId', "status": False}
+
+    except Exception as e:
+        return print(e, "\ngetLanguage error")
 
 def setLanguage(chatId, language):
     try:
         with app.app_context():
-            if Customer.query.filter_by(chat_id=chatId).first():
-                customer = Customer.query.filter_by(chat_id=chatId).first()
+            if Customer.query.filter_by(chatId=chatId).first():
+                customer = Customer.query.filter_by(chatId=chatId).first()
                 customer.language = language
                 db.session.commit()
                 return {"message": f'Language set is{customer.language}', "status": True}
@@ -67,112 +109,123 @@ def getLanguage(chatId):
     except Exception as e:
         return print(e, "\ngetLanguage error")
 
-def getCustomers():
+def setAddress(chatId, location):
     try:
         with app.app_context():
-            return Customer.query.filter(Customer.id != None).all()
+            if Customer.query.filter_by(chatId=chatId).first():
+                customer = Customer.query.filter_by(chatId=chatId).first()
+                customer.location = location
+                db.session.commit()
+                return {"message": f'Location set is{customer.location}', "status": True}
+            else:
+                return {"message": 'No user with this chatId', "status": False}
 
     except Exception as e:
-        return print(e, "\ngetCustomers error")
+        return print(e, "\nsetAddress error")
+
+def getAddress(chatId):
+    try:
+        with app.app_context():
+            if Customer.query.filter_by(chatId=chatId).first():
+                customer = Customer.query.filter_by(chatId=chatId).first()
+                return customer.location
+            else:
+                return {"message": 'No user with this chatId', "status": False}
+
+    except Exception as e:
+        return print(e, "\nsetAddress error")
+
+def setComment(chatId, comment):
+    try:
+        with app.app_context():
+            if Customer.query.filter_by(chatId=chatId).first():
+                customer = Customer.query.filter_by(chatId=chatId).first()
+                customer.comment = comment
+                db.session.commit()
+                return {"message": f'Location set is{customer.location}', "status": True}
+            else:
+                return {"message": 'No user with this chatId', "status": False}
+
+    except Exception as e:
+        return print(e, "\nsetAddress error")
+
+def getComment(chatId):
+    try:
+        with app.app_context():
+            if Customer.query.filter_by(chatId=chatId).first():
+                customer = Customer.query.filter_by(chatId=chatId).first()
+                return customer.comment
+            else:
+                return {"message": 'No user with this chatId', "status": False}
+
+    except Exception as e:
+        return print(e, "\nsetAddress error")
+
+# def setProduct(chatId, nameOfProduct, numOfProduct, priceOfProduct):
+#     try:
+#         with app.app_context():
+#             if Customer.query.filter_by(chatId=chatId).first():
+#                 customer = Customer.query.filter_by(chatId=chatId).first()
+#                 customer.cart[nameOfProduct] = numOfProduct
+#                 db.session.commit()
+#                 return {"message": f'Location set is{customer.location}', "status": True}
+#             else:
+#                 return {"message": 'No user with this chatId', "status": False}
+#
+#     except Exception as e:
+#         return print(e, "\nsetProduct error")
+#
+# def getCart(chatId):
+#     try:
+#         with app.app_context():
+#             if Customer.query.filter_by(chatId=chatId).first():
+#                 customer = Customer.query.filter_by(chatId=chatId).first()
+#                 return customer.cart
+#             else:
+#                 return {"message": 'No user with this chatId', "status": False}
+#
+#     except Exception as e:
+#         return print(e, "\nsetAddress error")
+#
+# def getOfNumberOfProducts(chatId):
+#     try:
+#         with app.app_context():
+#             if Customer.query.filter_by(chatId=chatId).first():
+#                 customer = Customer.query.filter_by(chatId=chatId).first()
+#                 return len(customer.cart)
+#             else:
+#                 return {"message": 'No user with this chatId', "status": False}
+#
+#     except Exception as e:
+#         return print(e, "\ngetOfNumberOfProducts error")
+# def setContact(chatId, contact):
+#     try:
+#         with app.app_context():
+#             if Customer.query.filter_by(chatId=chatId).first():
+#                 customer = Customer.query.filter_by(chatId=chatId).first()
+#                 customer.contact = contact
+#                 db.session.commit()
+#                 return {"message": f'Location set is{customer.location}', "status": True}
+#             else:
+#                 return {"message": 'No user with this chatId', "status": False}
+#
+#     except Exception as e:
+#         return print(e, "\nsetAddress error")
+#
+# def getContact(chatId):
+#     try:
+#         with app.app_context():
+#             if Customer.query.filter_by(chatId=chatId).first():
+#                 customer = Customer.query.filter_by(chatId=chatId).first()
+#                 return customer.contact
+#             else:
+#                 return {"message": 'No user with this chatId', "status": False}
+#
+#     except Exception as e:
+#         return print(e, "\nsetAddress error")
 
 
-    # def createAccount(
-    #         # self,
-    #         # api_id: str,
-    #         # api_hash: str,
-    #         # phone: str,
-    #         # username: str,
-    #         # host: Optional[str],
-    #         # port: Optional[str],
-    #         # public_key: Optional[str]
-    # ):
-    #     with app.app_context():
-    #         if AccountModel.query.filter_by(username=self.username).first():
-    #             response = databaseResponseModel(
-    #                 status=False,
-    #                 action="Create new account",
-    #                 message="Account already created in database, unsuccessfully"
-    #             )
-    #             log.logger.warning(response)
-    #             return response
-    #         else:
-    #             self.api_id = api_id
-    #             self.api_hash = api_hash
-    #             self.phone = phone
-    #             self.username = username
-    #             self.host = host
-    #             self.port = port
-    #             self.public_key = public_key
-    #
-    #             db.session.add(self)
-    #             db.session.commit()
-    #
-    #             response = databaseResponseModel(
-    #                 status=True,
-    #                 action="Create new account",
-    #                 message="Account created in database successfully"
-    #             )
-    #             log.logger.info(response)
-    #             return response
-    #
-    # def updateAccount(
-    #         self,
-    #         api_id: Optional[str] = None,
-    #         api_hash: Optional[str] = None,
-    #         phone: Optional[str] = None,
-    #         username: Optional[str] = None,
-    #         host: Optional[str] = None,
-    #         port: Optional[str] = None,
-    #         public_key: Optional[str] = None
-    # ):
-    #     with app.app_context():
-    #         account = AccountModel.query.filter_by(username=self.username).first()
-    #         if account is not None:
-    #             account.api_id = api_id if api_id is not None else account.api_id
-    #             account.api_hash = api_hash if api_hash is not None else account.api_hash
-    #             account.phone = phone if phone is not None else account.phone
-    #             account.username = username if username is not None else account.username
-    #             account.host = host if host is not None else account.host
-    #             account.port = port if port is not None else account.port
-    #             account.public_key = public_key if public_key is not None else account.public_key
-    #
-    #             account.session.commit()
-    #
-    #             response = databaseResponseModel(
-    #                 status=True,
-    #                 action="Update account",
-    #                 message="Account updated, successfully"
-    #             )
-    #
-    #             log.logger.info(response)
-    #             return response
-    #
-    #         else:
-    #             response = databaseResponseModel(
-    #                 status=False,
-    #                 action="Update account",
-    #                 message="Account doesnt found, update unsuccessfully"
-    #             )
-    #             log.logger.warning(response)
-    #             return response
-    #
-    # def deleteAccount(self):
-    #     with app.app_context():
-    #         if AccountModel.query.filter_by(username=self.username).first():
-    #             AccountModel.query.filter_by(username=self.username).delete()
-    #             db.session.commit()
-    #             response = databaseResponseModel(
-    #                 status=True,
-    #                 action="Delete account",
-    #                 message="Account deleted, successfully"
-    #             )
-    #             log.logger.info(response)
-    #             return response
-    #         else:
-    #             response = databaseResponseModel(
-    #                 status=False,
-    #                 action="Delete account",
-    #                 message="Account doesnt found, deleted unsuccessfully"
-    #             )
-    #             log.logger.warning(response)
-    #             return response
+
+
+
+
