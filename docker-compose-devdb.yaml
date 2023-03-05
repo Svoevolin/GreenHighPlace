@@ -24,3 +24,13 @@ services:
       PGADMIN_DEFAULT_PASSWORD: root
     ports:
       - '5050:80'
+
+#  redis:
+#    image: redislabs/redismod
+#    ports:
+#      - '6379:6379'
+#
+#  redisinsight:
+#    image: redislabs/redisinsight:latest
+#    ports:
+#      - '8001:8001'

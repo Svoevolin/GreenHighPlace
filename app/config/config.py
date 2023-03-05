@@ -2,9 +2,7 @@ import os
 import configparser
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-# from flask_cors import CORS
 
-# token = '6174615870:AAH2mTyw4Pa6vro3f8tqZAkXEGosYA6YoQI'
 
 config = configparser.ConfigParser()
 basedir = os.path.abspath(os.path.dirname(__file__))
