@@ -175,19 +175,15 @@ def getProducts():
         with app.app_context():
 
             allProducts = Product.query.filter(Product.id != None).all()
-            print(allProducts)
             dictOfQueue = {}
 
             for one in allProducts:
                 dictOfQueue[one.queue] = one
-            print(dictOfQueue)
 
             listOfQueue = sorted(dictOfQueue)
-            print(listOfQueue)
             finalList = list()
             for i in listOfQueue:
                 finalList.append(dictOfQueue[i])
-            print(finalList)
             return finalList
     except Exception as e:
         return print(e, "\ngetProduct error")

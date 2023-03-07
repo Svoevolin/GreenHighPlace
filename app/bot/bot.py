@@ -30,54 +30,6 @@ def extractUniqueCode(text):
 
 bot = telebot.TeleBot(os.getenv('TelegramBotToken'))
 
-
-# #
-# id = pm.addProduct('Шишки еловые', 100)
-# pm.setType(id, 'video')
-# pm.setMedia(id, '/home/fake_svoevolin/Desktop/tgBot_BOSHKI_PHUKET/Media/01.mp4')
-# pm.setInfoAbout(id, 'Хорошие шишки бери')
-#
-# #
-# id = pm.addProduct('Шишки кедровые', 150)
-# pm.setType(id, 'video')
-# pm.setMedia(id, '/home/fake_svoevolin/Desktop/tgBot_BOSHKI_PHUKET/Media/02.mp4')
-# pm.setInfoAbout(id, 'Хорошие шишки бери')
-#
-# id = pm.addProduct('Шишки разные', 100)
-# pm.setType(id, 'video')
-# pm.setMedia(id, '/home/fake_svoevolin/Desktop/tgBot_BOSHKI_PHUKET/Media/03.mp4')
-# pm.setInfoAbout(id, 'Хорошие шишки бери')
-# #
-# #
-# id = pm.addProduct('Шишки махна', 104)
-# pm.setType(id, 'video')
-# pm.setMedia(id, '/home/fake_svoevolin/Desktop/tgBot_BOSHKI_PHUKET/Media/04.mp4')
-# pm.setInfoAbout(id, 'Хорошие шишки бери')
-#
-# id = pm.addProduct('Шишки просто', 120)
-# pm.setType(id, 'video')
-# pm.setMedia(id, '/home/fake_svoevolin/Desktop/tgBot_BOSHKI_PHUKET/Media/01.mp4')
-# pm.setInfoAbout(id, 'Хорошие шишки бери')
-#
-#
-# id = pm.addProduct('Шишки китайские', 40)
-# pm.setType(id, 'video')
-# pm.setMedia(id, '/home/fake_svoevolin/Desktop/tgBot_BOSHKI_PHUKET/Media/02.mp4')
-# pm.setInfoAbout(id, 'Хорошие шишки бери')
-#
-# id =  pm.addProduct('Шишки плохие', 130)
-# pm.setType(id, 'video')
-# pm.setMedia(id, '/home/fake_svoevolin/Desktop/tgBot_BOSHKI_PHUKET/Media/03.mp4')
-# pm.setInfoAbout(id, 'Хорошие шишки бери')
-#
-# id = pm.addProduct('Шишки хорошие', 70)
-# pm.setType(id, 'video')
-# pm.setMedia(id, '/home/fake_svoevolin/Desktop/tgBot_BOSHKI_PHUKET/Media/04.mp4')
-# pm.setInfoAbout(id, 'Хорошие шишки бери')
-
-
-# co.switcherActiveToComplete(ao.getActiveOrder(1))
-# ro.switcherActiveToRefusal(ao.getActiveOrder(2), "Бан по причине пидарас")
 @bot.message_handler(commands=['start'])
 def start(message) -> None:
     if not am.checkAdmin(chatId=message.chat.id):
@@ -92,8 +44,8 @@ def start(message) -> None:
 
     else:
         bot.send_message(chat_id=message.chat.id,
-                         text=mk.helloBoss(),
-                         reply_markup=mk.helloMenu())
+                         text=mk.helloBoss(db.getLanguage(message.chat.id)),
+                         reply_markup=mk.helloMenu(db.getLanguage(message.chat.id)))
 
 
 @bot.message_handler(content_types=['text'])
@@ -129,23 +81,25 @@ def get_text_messages(message):
                 parse_mode='MARKDOWN'
             )
 
-        if message.text == mk.toAdminText:
-            msg = bot.send_message(chat_id=message.chat.id, text=mk.toEnterPasswordText())
+        if message.text == mk.toAdminTextRU or message.text == mk.toAdminTextEN:
+            msg = bot.send_message(chat_id=message.chat.id,
+                                   text=mk.toEnterPasswordText(db.getLanguage(message.chat.id)))
             bot.register_next_step_handler(msg, stepToEnterPassword)
 
     elif am.checkAdmin(chatId=message.chat.id):
-        if message.text == "На главную":
+        if message.text == "На главную" or message.text == "Main menu":
             bot.send_message(chat_id=message.chat.id,
-                             text=mk.helloBoss(),
-                             reply_markup=mk.helloMenu())
+                             text=mk.helloBoss(db.getLanguage(message.chat.id)),
+                             reply_markup=mk.helloMenu(db.getLanguage(message.chat.id)))
 
 
 def stepToEnterPassword(message):
     if message.text == mk.password:
         am.addAdmin(message.chat.id)
-        bot.send_message(chat_id=message.chat.id, text=mk.passwordCorrectText(), reply_markup=mk.mainAdmin())
+        bot.send_message(chat_id=message.chat.id, text=mk.passwordCorrectText(db.getLanguage(message.chat.id)),
+                         reply_markup=mk.mainAdmin(db.getLanguage(message.chat.id)))
     else:
-        bot.send_message(chat_id=message.chat.id, text=mk.passwordUncorrectText())
+        bot.send_message(chat_id=message.chat.id, text=mk.passwordUncorrectText(db.getLanguage(message.chat.id)))
 
 
 def stepByInviteToWriteAddress(message):
@@ -349,8 +303,8 @@ def language(call):
 
         for admin in am.getAdmins():
             bot.send_message(chat_id=admin.chatId,
-                             text=mk.showNewActiveOrderText(numberOfOrder),
-                             reply_markup=mk.showNewActiveOrderMenu(page))
+                             text=mk.showNewActiveOrderText(numberOfOrder, db.getLanguage(admin.chatId)),
+                             reply_markup=mk.showNewActiveOrderMenu(page, db.getLanguage(admin.chatId)))
 
         bot.edit_message_text(chat_id=call.message.chat.id,
                               message_id=call.message.message_id,
@@ -464,36 +418,44 @@ def language(call):
     if call.data == 'toMainAdmin':
         bot.edit_message_text(chat_id=call.message.chat.id,
                               message_id=call.message.message_id,
-                              text=mk.helloBoss(),
-                              reply_markup=mk.helloMenu())
+                              text=mk.helloBoss(db.getLanguage(call.message.chat.id)),
+                              reply_markup=mk.helloMenu(db.getLanguage(call.message.chat.id)))
 
 
     if call.data == "adminOrders":
         bot.edit_message_text(chat_id=call.message.chat.id,
                               message_id=call.message.message_id,
-                              text=mk.chooseListOrdersText,
-                              reply_markup=mk.chooseListOrdersMenu())
+                              text=mk.chooseListOrdersText(db.getLanguage(call.message.chat.id)),
+                              reply_markup=mk.chooseListOrdersMenu(db.getLanguage(call.message.chat.id)))
 
     if call.data == "activeList":
         bot.edit_message_text(chat_id=call.message.chat.id,
                               message_id=call.message.message_id,
-                              text=mk.AdminTextOrderActive(ao.getAllActiveOrders()),
-                              reply_markup=mk.adminSliderOrderActive(1, ao.getAllActiveOrders()))
+                              text=mk.AdminTextOrderActive(ao.getAllActiveOrders(),
+                                                           db.getLanguage(call.message.chat.id)),
+                              reply_markup=mk.adminSliderOrderActive(1,
+                                                                     ao.getAllActiveOrders(),
+                                                                     db.getLanguage(call.message.chat.id)))
 
     if call.data.split('#')[0] == 'adminActiveOrder':
         page = int(call.data.split('#')[1])
         bot.edit_message_text(chat_id=call.message.chat.id,
                               message_id=call.message.message_id,
-                              text=mk.AdminTextOrderActive(ao.getAllActiveOrders()),
-                              reply_markup=mk.adminSliderOrderActive(page, ao.getAllActiveOrders()))
+                              text=mk.AdminTextOrderActive(ao.getAllActiveOrders(),
+                                                           db.getLanguage(call.message.chat.id)),
+                              reply_markup=mk.adminSliderOrderActive(page,
+                                                                     ao.getAllActiveOrders(),
+                                                                     db.getLanguage(call.message.chat.id)))
 
     if call.data.split('#')[0] == 'adminLookActive':
         bot.edit_message_text(chat_id=call.message.chat.id,
                               message_id=call.message.message_id,
                               text=mk.adminActiveInfoText(ao.getAllActiveOrders(),
-                                                          int(call.data.split('#')[1])),
+                                                          int(call.data.split('#')[1]),
+                                                          db.getLanguage(call.message.chat.id)),
                               reply_markup=mk.adminActiveInfoMenu(ao.getAllActiveOrders(),
-                                                                  int(call.data.split('#')[1])))
+                                                                  int(call.data.split('#')[1]),
+                                                                  db.getLanguage(call.message.chat.id)))
 
     if call.data.split('#')[0] == 'acceptingActive':
 
@@ -506,7 +468,7 @@ def language(call):
         ao.switchStatus(idOrder)
         bot.answer_callback_query(callback_query_id=call.id,
                                   show_alert=True,
-                                  text=mk.switchStatusText())
+                                  text=mk.switchStatusText(db.getLanguage(call.message.chat.id)))
 
         page = 0
 
@@ -518,16 +480,20 @@ def language(call):
         bot.edit_message_text(chat_id=call.message.chat.id,
                               message_id=call.message.message_id,
                               text=mk.adminActiveInfoText(ao.getAllActiveOrders(),
-                                                          page),
-                              reply_markup=mk.adminActiveInfoMenu(ao.getAllActiveOrders(), page))
+                                                          page,
+                                                          db.getLanguage(call.message.chat.id)),
+                              reply_markup=mk.adminActiveInfoMenu(ao.getAllActiveOrders(),
+                                                                  page,
+                                                                  db.getLanguage(call.message.chat.id)))
 
     if call.data.split('#')[0] == 'completingActive':
         id = int(call.data.split('#')[1])
         co.switcherActiveToComplete(ao.getActiveOrder(id))
         bot.edit_message_text(chat_id=call.message.chat.id,
                               message_id=call.message.message_id,
-                              text=mk.switchActiveToCompleteText(id),
-                              reply_markup=mk.switchActiveToCompleteMenu())
+                              text=mk.switchActiveToCompleteText(id,
+                                                                 db.getLanguage(call.message.chat.id)),
+                              reply_markup=mk.switchActiveToCompleteMenu(db.getLanguage(call.message.chat.id)))
 
     if call.data.split('#')[0] == 'refusingActive':
         idActive = int(call.data.split('#')[1])
@@ -535,8 +501,10 @@ def language(call):
         msg = bot.edit_message_text(chat_id=call.message.chat.id,
                                     message_id=call.message.message_id,
                                     text=mk.switchActiveToRefusalText(
+                                        db.getLanguage(call.message.chat.id),
                                         db.getLanguage(ao.getActiveOrder(idActive).customer_id)),
-                                    reply_markup=mk.switchActiveToRefusalMenu(page))
+                                    reply_markup=mk.switchActiveToRefusalMenu(page,
+                                                                              db.getLanguage(call.message.chat.id)))
         bot.register_next_step_handler(msg, toWriteReasonForRefusal, idActive, call.message.message_id)
 
     if call.data.split('#')[0] == 'activeToRefusalCancel':
@@ -544,9 +512,11 @@ def language(call):
         bot.edit_message_text(chat_id=call.message.chat.id,
                               message_id=call.message.message_id,
                               text=mk.adminActiveInfoText(ao.getAllActiveOrders(),
-                                                          int(call.data.split('#')[1])),
+                                                          int(call.data.split('#')[1]),
+                                                          db.getLanguage(call.message.chat.id)),
                               reply_markup=mk.adminActiveInfoMenu(ao.getAllActiveOrders(),
-                                                                  int(call.data.split('#')[1])))
+                                                                  int(call.data.split('#')[1]),
+                                                                  db.getLanguage(call.message.chat.id)))
 
     if call.data.split('#')[0] == 'messageToCustomer':
 
@@ -558,8 +528,12 @@ def language(call):
             page = int(call.data.split('#')[3])
             msg = bot.edit_message_text(chat_id=call.message.chat.id,
                                         message_id=call.message.message_id,
-                                        text=mk.toCommunicateWithCustomerText(idOrder),
-                                        reply_markup=mk.toCommunicateWithCustomerMenu(page))
+                                        text=mk.toCommunicateWithCustomerText(idOrder,
+                                                                              db.getLanguage(call.message.chat.id)),
+                                        reply_markup=mk.toCommunicateWithCustomerMenu(page,
+                                                                                      db.getLanguage(
+                                                                                          call.message.chat.id
+                                                                                      )))
 
             bot.register_next_step_handler(msg, toCommunicateAdminToCustomerFromOrders, idCustomer,
                                            idOrder, call.message.message_id, page)
@@ -575,8 +549,10 @@ def language(call):
 
             msg = bot.edit_message_text(chat_id=call.message.chat.id,
                                         message_id=call.message.message_id,
-                                        text=mk.toCommunicateWithCustomerText(idOrder),
-                                        reply_markup=mk.toAnswerToCustomerMenu(page))
+                                        text=mk.toCommunicateWithCustomerText(idOrder,
+                                                                              db.getLanguage(call.message.chat.id)),
+                                        reply_markup=mk.toAnswerToCustomerMenu(page,
+                                                                               db.getLanguage(call.message.chat.id)))
 
             bot.register_next_step_handler(msg, toCommunicateAdminToCustomerFromOrders, idCustomer,
                                            idOrder, call.message.message_id, page)
@@ -588,9 +564,11 @@ def language(call):
         bot.edit_message_text(chat_id=call.message.chat.id,
                               message_id=call.message.message_id,
                               text=mk.adminActiveInfoText(ao.getAllActiveOrders(),
-                                                          int(call.data.split('#')[1])),
+                                                          int(call.data.split('#')[1]),
+                                                          db.getLanguage(call.message.chat.id)),
                               reply_markup=mk.adminActiveInfoMenu(ao.getAllActiveOrders(),
-                                                                  int(call.data.split('#')[1])))
+                                                                  int(call.data.split('#')[1]),
+                                                                  db.getLanguage(call.message.chat.id)))
 
     if call.data == 'answerToAdminCancel':
         bot.clear_step_handler_by_chat_id(chat_id=call.message.chat.id)
@@ -622,42 +600,56 @@ def language(call):
     if call.data == "refusalList":
         bot.edit_message_text(chat_id=call.message.chat.id,
                               message_id=call.message.message_id,
-                              text=mk.AdminTextOrderRefusal(ro.getAllRefusalOrders()),
-                              reply_markup=mk.adminSliderOrderRefusal(1, ro.getAllRefusalOrders()))
+                              text=mk.AdminTextOrderRefusal(ro.getAllRefusalOrders(),
+                                                            db.getLanguage(call.message.chat.id)),
+                              reply_markup=mk.adminSliderOrderRefusal(1,
+                                                                      ro.getAllRefusalOrders(),
+                                                                      db.getLanguage(call.message.chat.id)))
 
     if call.data.split('#')[0] == 'adminRefusalOrder':
         page = int(call.data.split('#')[1])
         bot.edit_message_text(chat_id=call.message.chat.id,
                               message_id=call.message.message_id,
-                              text=mk.AdminTextOrderRefusal(ro.getAllRefusalOrders()),
-                              reply_markup=mk.adminSliderOrderRefusal(page, ro.getAllRefusalOrders()))
+                              text=mk.AdminTextOrderRefusal(ro.getAllRefusalOrders(),
+                                                            db.getLanguage(call.message.chat.id)),
+                              reply_markup=mk.adminSliderOrderRefusal(page,
+                                                                      ro.getAllRefusalOrders(),
+                                                                      db.getLanguage(call.message.chat.id)))
 
     if call.data.split('#')[0] == 'adminLookRefusal':
         bot.edit_message_text(chat_id=call.message.chat.id,
                               message_id=call.message.message_id,
                               text=mk.adminRefusalInfoText(ro.getAllRefusalOrders(),
-                                                          int(call.data.split('#')[1])),
-                              reply_markup=mk.adminRefusalInfoMenu())
+                                                           int(call.data.split('#')[1]),
+                                                           db.getLanguage(call.message.chat.id)),
+                              reply_markup=mk.adminRefusalInfoMenu(db.getLanguage(call.message.chat.id)))
 
     if call.data == "completeList":
         bot.edit_message_text(chat_id=call.message.chat.id,
                               message_id=call.message.message_id,
-                              text=mk.AdminTextOrderComplete(co.getAllCompleteOrders()),
-                              reply_markup=mk.adminSliderOrderComplete(1, co.getAllCompleteOrders()))
+                              text=mk.AdminTextOrderComplete(co.getAllCompleteOrders(),
+                                                             db.getLanguage(call.message.chat.id)),
+                              reply_markup=mk.adminSliderOrderComplete(1,
+                                                                       co.getAllCompleteOrders(),
+                                                                       db.getLanguage(call.message.chat.id)))
 
     if call.data.split('#')[0] == 'adminCompleteOrder':
         page = int(call.data.split('#')[1])
         bot.edit_message_text(chat_id=call.message.chat.id,
                               message_id=call.message.message_id,
-                              text=mk.AdminTextOrderComplete(co.getAllCompleteOrders()),
-                              reply_markup=mk.adminSliderOrderComplete(page, co.getAllCompleteOrders()))
+                              text=mk.AdminTextOrderComplete(co.getAllCompleteOrders(),
+                                                             db.getLanguage(call.message.chat.id)),
+                              reply_markup=mk.adminSliderOrderComplete(page,
+                                                                       co.getAllCompleteOrders(),
+                                                                       db.getLanguage(call.message.chat.id)))
 
     if call.data.split('#')[0] == 'adminLookComplete':
         bot.edit_message_text(chat_id=call.message.chat.id,
                               message_id=call.message.message_id,
                               text=mk.adminCompleteInfoText(co.getAllCompleteOrders(),
-                                                            int(call.data.split('#')[1])),
-                              reply_markup=mk.adminCompleteInfoMenu())
+                                                            int(call.data.split('#')[1]),
+                                                            db.getLanguage(call.message.chat.id)),
+                              reply_markup=mk.adminCompleteInfoMenu(db.getLanguage(call.message.chat.id)))
 
     if call.data == 'adminPostSale':
         post.delPost(call.message.chat.id)
@@ -665,8 +657,8 @@ def language(call):
         adminPostSaleChecker[call.message.chat.id] = True
         msg = bot.edit_message_text(chat_id=call.message.chat.id,
                                     message_id=call.message.message_id,
-                                    text=mk.adminBeforePostTextRU(),
-                                    reply_markup=mk.adminBeforePostMenu())
+                                    text=mk.adminBeforePostTextRU(db.getLanguage(call.message.chat.id)),
+                                    reply_markup=mk.adminBeforePostMenu(db.getLanguage(call.message.chat.id)))
 
         bot.register_next_step_handler(msg, toPostAdminTextRU)
 
@@ -675,15 +667,15 @@ def language(call):
         post.setDirType(call.message.chat.id, "video")
         bot.edit_message_text(chat_id=call.message.chat.id,
                               message_id=call.message.message_id,
-                              text=mk.adminPostToAttachVideo(),
-                              reply_markup=mk.adminBeforePostMenu())
+                              text=mk.adminPostToAttachVideo(db.getLanguage(call.message.chat.id)),
+                              reply_markup=mk.adminBeforePostMenu(db.getLanguage(call.message.chat.id)))
 
     if call.data == 'attachPhoto':
         post.setDirType(call.message.chat.id, "photo")
         bot.edit_message_text(chat_id=call.message.chat.id,
                               message_id=call.message.message_id,
-                              text=mk.adminPostToAttachPhoto(),
-                              reply_markup=mk.adminBeforePostMenu())
+                              text=mk.adminPostToAttachPhoto(db.getLanguage(call.message.chat.id)),
+                              reply_markup=mk.adminBeforePostMenu(db.getLanguage(call.message.chat.id)))
 
     if call.data == 'noAttach':
         users = db.getAllCustomers()
@@ -702,10 +694,8 @@ def language(call):
         adminPostSaleChecker[call.message.chat.id] = False
         bot.delete_message(chat_id=call.message.chat.id,message_id=call.message.message_id)
         bot.send_message(chat_id=call.message.chat.id,
-                         text=mk.helloBoss(),
-                         reply_markup=mk.helloMenu())
-
-
+                         text=mk.helloBoss(db.getLanguage(call.message.chat.id)),
+                         reply_markup=mk.helloMenu(db.getLanguage(call.message.chat.id)))
 
     if call.data == 'resetPost':
 
@@ -722,8 +712,8 @@ def language(call):
                            message_id=call.message.message_id)
 
         bot.send_message(chat_id=call.message.chat.id,
-                         text=mk.helloBoss(),
-                         reply_markup=mk.helloMenu())
+                         text=mk.helloBoss(db.getLanguage(call.message.chat.id)),
+                         reply_markup=mk.helloMenu(db.getLanguage(call.message.chat.id)))
 
     if call.data == 'adminToPublishPost':
 
@@ -762,22 +752,28 @@ def language(call):
         adminPostSaleChecker[call.message.chat.id] = False
         bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
         bot.send_message(chat_id=call.message.chat.id,
-                         text=mk.helloBoss(),
-                         reply_markup=mk.helloMenu())
+                         text=mk.helloBoss(db.getLanguage(call.message.chat.id)),
+                         reply_markup=mk.helloMenu(db.getLanguage(call.message.chat.id)))
 
     if call.data == 'adminCatalog':
 
         bot.edit_message_text(chat_id=call.message.chat.id,
                               message_id=call.message.message_id,
-                              text=mk.adminListProductText(pm.getProducts()),
-                              reply_markup=mk.adminSliderShop(1, pm.getProducts()))
+                              text=mk.adminListProductText(pm.getProducts(),
+                                                           db.getLanguage(call.message.chat.id)),
+                              reply_markup=mk.adminSliderShop(1,
+                                                              pm.getProducts(),
+                                                              db.getLanguage(call.message.chat.id)))
 
     if call.data.split('#')[0] == 'adminListProduct':
 
         bot.edit_message_text(chat_id=call.message.chat.id,
                               message_id=call.message.message_id,
-                              text=mk.adminListProductText(pm.getProducts()),
-                              reply_markup=mk.adminSliderShop(int(call.data.split('#')[1]), pm.getProducts()))
+                              text=mk.adminListProductText(pm.getProducts(),
+                                                           db.getLanguage(call.message.chat.id)),
+                              reply_markup=mk.adminSliderShop(int(call.data.split('#')[1]),
+                                                              pm.getProducts(),
+                                                              db.getLanguage(call.message.chat.id)))
 
     if call.data.split('#')[0] == 'adminProductName':
         idProduct = int(call.data.split('#')[1])
@@ -789,21 +785,28 @@ def language(call):
 
             bot.send_video(chat_id=call.message.chat.id,
                            video=open(product.dirMedia, 'rb'),
-                           caption=mk.adminTextProduct(product),
-                           reply_markup=mk.adminProductMenu(idProduct))
+                           caption=mk.adminTextProduct(product,
+                                                       db.getLanguage(call.message.chat.id)),
+                           reply_markup=mk.adminProductMenu(idProduct,
+                                                            db.getLanguage(call.message.chat.id)))
 
         elif product.typeMedia == "photo":
 
             bot.send_photo(chat_id=call.message.chat.id,
                            photo=open(product.dirMedia, 'rb'),
-                           caption=mk.adminTextProduct(product),
-                           reply_markup=mk.adminProductMenu(idProduct))
+                           caption=mk.adminTextProduct(product,
+                                                       db.getLanguage(call.message.chat.id)),
+                           reply_markup=mk.adminProductMenu(idProduct,
+                                                            db.getLanguage(call.message.chat.id)))
 
     if call.data == "adminCatalogFromMedia":
         bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
         bot.send_message(chat_id=call.message.chat.id,
-                         text=mk.adminListProductText(pm.getProducts()),
-                         reply_markup=mk.adminSliderShop(1, pm.getProducts()))
+                         text=mk.adminListProductText(pm.getProducts(),
+                                                      db.getLanguage(call.message.chat.id)),
+                         reply_markup=mk.adminSliderShop(1,
+                                                         pm.getProducts(),
+                                                         db.getLanguage(call.message.chat.id)))
 
     if call.data.split('#')[0] == "adminDeleteProduct":
         idProduct = int(call.data.split('#')[1])
@@ -812,23 +815,25 @@ def language(call):
 
         bot.answer_callback_query(callback_query_id=call.id,
                                   show_alert=True,
-                                  text=mk.delProductText())
+                                  text=mk.delProductText(db.getLanguage(call.message.chat.id)))
 
         bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
         bot.send_message(chat_id=call.message.chat.id,
-                         text=mk.adminListProductText(pm.getProducts()),
-                         reply_markup=mk.adminSliderShop(1, pm.getProducts()))
+                         text=mk.adminListProductText(pm.getProducts(),
+                                                      db.getLanguage(call.message.chat.id)),
+                         reply_markup=mk.adminSliderShop(1,
+                                                         pm.getProducts(),
+                                                         db.getLanguage(call.message.chat.id)))
 
     if call.data == "adminAddProduct":
         npm.delNewProd(call.message.chat.id)
         npm.addNewProduct(call.message.chat.id)
         adminAddProductChecker[call.message.chat.id] = True
 
-
         msg = bot.edit_message_text(chat_id=call.message.chat.id,
                                     message_id=call.message.message_id,
-                                    text=mk.adminAddProductName(),
-                                    reply_markup=mk.adminAddProductNameMenu())
+                                    text=mk.adminAddProductName(db.getLanguage(call.message.chat.id)),
+                                    reply_markup=mk.adminAddProductNameMenu(db.getLanguage(call.message.chat.id)))
 
         bot.register_next_step_handler(msg, toNewProdName)
 
@@ -836,15 +841,15 @@ def language(call):
         npm.setType(call.message.chat.id, "video")
         bot.edit_message_text(chat_id=call.message.chat.id,
                               message_id=call.message.message_id,
-                              text=mk.adminPostToAttachVideo(),
-                              reply_markup=mk.adminAddProductNameMenu())
+                              text=mk.adminPostToAttachVideo(db.getLanguage(call.message.chat.id)),
+                              reply_markup=mk.adminAddProductNameMenu(db.getLanguage(call.message.chat.id)))
 
     if call.data == "attachPhotoToProduct":
         npm.setType(call.message.chat.id, "photo")
         bot.edit_message_text(chat_id=call.message.chat.id,
                               message_id=call.message.message_id,
-                              text=mk.adminPostToAttachPhoto(),
-                              reply_markup=mk.adminAddProductNameMenu())
+                              text=mk.adminPostToAttachPhoto(db.getLanguage(call.message.chat.id)),
+                              reply_markup=mk.adminAddProductNameMenu(db.getLanguage(call.message.chat.id)))
 
     if call.data == 'resetProduct':
 
@@ -861,8 +866,11 @@ def language(call):
                            message_id=call.message.message_id)
 
         bot.send_message(chat_id=call.message.chat.id,
-                         text=mk.adminListProductText(pm.getProducts()),
-                         reply_markup=mk.adminSliderShop(1, pm.getProducts()))
+                         text=mk.adminListProductText(pm.getProducts(),
+                                                      db.getLanguage(call.message.chat.id)),
+                         reply_markup=mk.adminSliderShop(1,
+                                                         pm.getProducts(),
+                                                         db.getLanguage(call.message.chat.id)))
 
     if call.data == 'addProductInFinish':
         pm.switcherNewProductToFinishProduct(npm.getNewProd(call.message.chat.id))
@@ -876,13 +884,16 @@ def language(call):
 
         bot.answer_callback_query(callback_query_id=call.id,
                                   show_alert=True,
-                                  text=mk.feedbackAdminNewPost())
+                                  text=mk.feedbackAdminNewPost(db.getLanguage(call.message.chat.id)))
 
         bot.delete_message(call.message.chat.id, call.message.message_id)
 
         bot.send_message(chat_id=call.message.chat.id,
-                         text=mk.adminListProductText(pm.getProducts()),
-                         reply_markup=mk.adminSliderShop(1, pm.getProducts()))
+                         text=mk.adminListProductText(pm.getProducts(),
+                                                      db.getLanguage(call.message.chat.id)),
+                         reply_markup=mk.adminSliderShop(1,
+                                                         pm.getProducts(),
+                                                         db.getLanguage(call.message.chat.id)))
 
     if call.data == 'addProductInStart':
         pm.switcherNewProductToStartProduct(npm.getNewProd(call.message.chat.id))
@@ -896,36 +907,42 @@ def language(call):
 
         bot.answer_callback_query(callback_query_id=call.id,
                                   show_alert=True,
-                                  text=mk.feedbackAdminNewPost())
+                                  text=mk.feedbackAdminNewPost(db.getLanguage(call.message.chat.id)))
 
         bot.delete_message(call.message.chat.id, call.message.message_id)
 
         bot.send_message(chat_id=call.message.chat.id,
-                         text=mk.adminListProductText(pm.getProducts()),
-                         reply_markup=mk.adminSliderShop(1, pm.getProducts()))
+                         text=mk.adminListProductText(pm.getProducts(),
+                                                      db.getLanguage(call.message.chat.id)),
+                         reply_markup=mk.adminSliderShop(1,
+                                                         pm.getProducts(),
+                                                         db.getLanguage(call.message.chat.id)))
 
     if call.data.split('#')[0] == 'adminChangeName':
         idProduct = int(call.data.split('#')[1])
         bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
         msg = bot.send_message(chat_id=call.message.chat.id,
-                               text=mk.adminAddProductName(),
-                               reply_markup=mk.adminChangeMenu(idProduct))
+                               text=mk.adminAddProductName(db.getLanguage(call.message.chat.id)),
+                               reply_markup=mk.adminChangeMenu(idProduct,
+                                                               db.getLanguage(call.message.chat.id)))
         bot.register_next_step_handler(msg, toWriteNameChangingProduct, idProduct)
 
     if call.data.split('#')[0] == 'adminChangeInfoAbout':
         idProduct = int(call.data.split('#')[1])
         bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
         msg = bot.send_message(chat_id=call.message.chat.id,
-                               text=mk.adminAddProductText(),
-                               reply_markup=mk.adminChangeMenu(idProduct))
+                               text=mk.adminAddProductText(db.getLanguage(call.message.chat.id)),
+                               reply_markup=mk.adminChangeMenu(idProduct,
+                                                               db.getLanguage(call.message.chat.id)))
         bot.register_next_step_handler(msg, toWriteInfoAboutChangingProduct, idProduct)
 
     if call.data.split('#')[0] == 'adminChangePrice':
         idProduct = int(call.data.split('#')[1])
         bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
         msg = bot.send_message(chat_id=call.message.chat.id,
-                               text=mk.adminAddProductPrice(),
-                               reply_markup=mk.adminChangeMenu(idProduct))
+                               text=mk.adminAddProductPrice(db.getLanguage(call.message.chat.id)),
+                               reply_markup=mk.adminChangeMenu(idProduct,
+                                                               db.getLanguage(call.message.chat.id)))
         bot.register_next_step_handler(msg, toWritePriceChangingProduct, idProduct)
 
     if call.data.split('#')[0] == 'resetChanging':
@@ -940,15 +957,39 @@ def language(call):
 
             bot.send_video(chat_id=call.message.chat.id,
                            video=open(product.dirMedia, 'rb'),
-                           caption=mk.adminTextProduct(product),
-                           reply_markup=mk.adminProductMenu(idProduct))
+                           caption=mk.adminTextProduct(product,
+                                                       db.getLanguage(call.message.chat.id)),
+                           reply_markup=mk.adminProductMenu(idProduct,
+                                                            db.getLanguage(call.message.chat.id)))
 
         elif product.typeMedia == "photo":
 
             bot.send_photo(chat_id=call.message.chat.id,
                            photo=open(product.dirMedia, 'rb'),
-                           caption=mk.adminTextProduct(product),
-                           reply_markup=mk.adminProductMenu(idProduct))
+                           caption=mk.adminTextProduct(product,
+                                                       db.getLanguage(call.message.chat.id)),
+                           reply_markup=mk.adminProductMenu(idProduct,
+                                                            db.getLanguage(call.message.chat.id)))
+
+    if call.data == "adminSwitchLanguage":
+        bot.edit_message_text(chat_id=call.message.chat.id,
+                              message_id=call.message.message_id,
+                              text=mk.adminSwitcherLanguageText(db.getLanguage(call.message.chat.id)),
+                              reply_markup=mk.adminSwitcherLanguageMenu())
+
+    if call.data == "adminToRuLanguage":
+        db.setLanguage(call.message.chat.id, "RU")
+        bot.edit_message_text(chat_id=call.message.chat.id,
+                              message_id=call.message.message_id,
+                              text=mk.helloBoss(db.getLanguage(call.message.chat.id)),
+                              reply_markup=mk.helloMenu(db.getLanguage(call.message.chat.id)))
+
+    if call.data == "adminToEnLanguage":
+        db.setLanguage(call.message.chat.id, "EN")
+        bot.edit_message_text(chat_id=call.message.chat.id,
+                              message_id=call.message.message_id,
+                              text=mk.helloBoss(db.getLanguage(call.message.chat.id)),
+                              reply_markup=mk.helloMenu(db.getLanguage(call.message.chat.id)))
 
 
 def toWritePriceChangingProduct(message, idProduct):
@@ -960,15 +1001,19 @@ def toWritePriceChangingProduct(message, idProduct):
 
         bot.send_video(chat_id=message.chat.id,
                        video=open(product.dirMedia, 'rb'),
-                       caption=mk.adminTextProduct(product),
-                       reply_markup=mk.adminProductMenu(idProduct))
+                       caption=mk.adminTextProduct(product,
+                                                   db.getLanguage(message.chat.id)),
+                       reply_markup=mk.adminProductMenu(idProduct,
+                                                        db.getLanguage(message.chat.id)))
 
     elif product.typeMedia == "photo":
 
         bot.send_photo(chat_id=message.chat.id,
                        photo=open(product.dirMedia, 'rb'),
-                       caption=mk.adminTextProduct(product),
-                       reply_markup=mk.adminProductMenu(idProduct))
+                       caption=mk.adminTextProduct(product,
+                                                   db.getLanguage(message.chat.id)),
+                       reply_markup=mk.adminProductMenu(idProduct,
+                                                        db.getLanguage(message.chat.id)))
 def toWriteInfoAboutChangingProduct(message, idProduct):
     pm.setInfoAbout(idProduct, message.text)
 
@@ -978,15 +1023,19 @@ def toWriteInfoAboutChangingProduct(message, idProduct):
 
         bot.send_video(chat_id=message.chat.id,
                        video=open(product.dirMedia, 'rb'),
-                       caption=mk.adminTextProduct(product),
-                       reply_markup=mk.adminProductMenu(idProduct))
+                       caption=mk.adminTextProduct(product,
+                                                   db.getLanguage(message.chat.id)),
+                       reply_markup=mk.adminProductMenu(idProduct,
+                                                        db.getLanguage(message.chat.id)))
 
     elif product.typeMedia == "photo":
 
         bot.send_photo(chat_id=message.chat.id,
                        photo=open(product.dirMedia, 'rb'),
-                       caption=mk.adminTextProduct(product),
-                       reply_markup=mk.adminProductMenu(idProduct))
+                       caption=mk.adminTextProduct(product,
+                                                   db.getLanguage(message.chat.id)),
+                       reply_markup=mk.adminProductMenu(idProduct,
+                                                        db.getLanguage(message.chat.id)))
 def toWriteNameChangingProduct(message, idProduct):
     pm.setName(idProduct, message.text)
 
@@ -996,22 +1045,26 @@ def toWriteNameChangingProduct(message, idProduct):
 
         bot.send_video(chat_id=message.chat.id,
                        video=open(product.dirMedia, 'rb'),
-                       caption=mk.adminTextProduct(product),
-                       reply_markup=mk.adminProductMenu(idProduct))
+                       caption=mk.adminTextProduct(product,
+                                                   db.getLanguage(message.chat.id)),
+                       reply_markup=mk.adminProductMenu(idProduct,
+                                                        db.getLanguage(message.chat.id)))
 
     elif product.typeMedia == "photo":
 
         bot.send_photo(chat_id=message.chat.id,
                        photo=open(product.dirMedia, 'rb'),
-                       caption=mk.adminTextProduct(product),
-                       reply_markup=mk.adminProductMenu(idProduct))
+                       caption=mk.adminTextProduct(product,
+                                                   db.getLanguage(message.chat.id)),
+                       reply_markup=mk.adminProductMenu(idProduct,
+                                                        db.getLanguage(message.chat.id)))
 
 def toNewProdName(message):
     npm.setName(message.chat.id, message.text)
 
     msg = bot.send_message(chat_id=message.chat.id,
-                           text=mk.adminAddProductText(),
-                           reply_markup=mk.adminAddProductNameMenu())
+                           text=mk.adminAddProductText(db.getLanguage(message.chat.id)),
+                           reply_markup=mk.adminAddProductNameMenu(db.getLanguage(message.chat.id)))
 
     bot.register_next_step_handler(msg, toNewProdText)
 
@@ -1019,24 +1072,25 @@ def toNewProdText(message):
     npm.setInfoAbout(message.chat.id, message.text)
 
     msg = bot.send_message(chat_id=message.chat.id,
-                           text=mk.adminAddProductPrice(),
-                           reply_markup=mk.adminAddProductNameMenu())
+                           text=mk.adminAddProductPrice(db.getLanguage(message.chat.id)),
+                           reply_markup=mk.adminAddProductNameMenu(db.getLanguage(message.chat.id)))
 
     bot.register_next_step_handler(msg, toNewProdPrice)
 def toNewProdPrice(message):
     npm.setPrice(message.chat.id, message.text)
 
     bot.send_message(chat_id=message.chat.id,
-                     text=mk.adminAddProductMediaText(npm.getNewProd(message.chat.id)),
-                     reply_markup=mk.adminAddProductMediaMenu())
+                     text=mk.adminAddProductMediaText(npm.getNewProd(message.chat.id),
+                                                      db.getLanguage(message.chat.id)),
+                     reply_markup=mk.adminAddProductMediaMenu(db.getLanguage(message.chat.id)))
 
 def toPostAdminTextRU(message):
 
     post.setTextRU(message.chat.id, message.text)
 
     msg = bot.send_message(chat_id=message.chat.id,
-                           text=mk.adminBeforePostTextEN(),
-                           reply_markup=mk.adminBeforePostMenu())
+                           text=mk.adminBeforePostTextEN(db.getLanguage(message.chat.id)),
+                           reply_markup=mk.adminBeforePostMenu(db.getLanguage(message.chat.id)))
 
     bot.register_next_step_handler(msg, toPostAdminTextEN)
 
@@ -1046,15 +1100,16 @@ def toPostAdminTextEN(message):
 
     bot.send_message(chat_id=message.chat.id,
                      text=mk.adminGetTypePostText(post.getPost(message.chat.id).textRU,
-                                                  post.getPost(message.chat.id).textEN),
-                     reply_markup=mk.adminGetTypePostMenu())
+                                                  post.getPost(message.chat.id).textEN,
+                                                  db.getLanguage(message.chat.id)),
+                     reply_markup=mk.adminGetTypePostMenu(db.getLanguage(message.chat.id)))
 def toWriteToAdminStepper(message, idOrder, messageToDelete):
     bot.delete_message(message.chat.id, messageToDelete)
 
     for admin in am.getAdmins():
         bot.send_message(chat_id=admin.chatId,
-                         text=mk.sendingToAdminText(idOrder, message.text),
-                         reply_markup=mk.sendingToAdminMenu(idOrder, message.chat.id))
+                         text=mk.sendingToAdminText(idOrder, message.text, db.getLanguage(admin.chatId)),
+                         reply_markup=mk.sendingToAdminMenu(idOrder, message.chat.id, db.getLanguage(admin.chatId)))
 
     bot.send_message(chat_id=message.chat.id,
                      text=mk.feedbackToCustomerAfterSendAdminText(db.getLanguage(message.chat.id)))
@@ -1062,8 +1117,8 @@ def toAnswerToAdminStepper(message, idAdmin, idOrder, messageToDelete):
     bot.delete_message(message.chat.id, messageToDelete)
 
     bot.send_message(chat_id=idAdmin,
-                     text=mk.sendingToAdminText(idOrder, message.text),
-                     reply_markup=mk.sendingToAdminMenu(idOrder, message.chat.id))
+                     text=mk.sendingToAdminText(idOrder, message.text, db.getLanguage(idAdmin)),
+                     reply_markup=mk.sendingToAdminMenu(idOrder, message.chat.id, db.getLanguage(idAdmin)))
 
     bot.send_message(chat_id=message.chat.id,
                      text=mk.feedbackToCustomerAfterSendAdminText(db.getLanguage(message.chat.id)))
@@ -1075,8 +1130,10 @@ def toCommunicateAdminToCustomerFromOrders(message, idCustomer, idOrder, message
                      reply_markup=mk.sendingToCustomerMenu(idOrder, message.chat.id, db.getLanguage(idCustomer)))
 
     bot.send_message(chat_id=message.chat.id,
-                     text=mk.answerNextSendToCustomerText(idOrder),
-                     reply_markup=mk.answerNextSendToCustomerMenu(page))
+                     text=mk.answerNextSendToCustomerText(idOrder,
+                                                          db.getLanguage(message.chat.id)),
+                     reply_markup=mk.answerNextSendToCustomerMenu(page,
+                                                                  db.getLanguage(message.chat.id)))
 
 
 def toWriteReasonForRefusal(message, idActive, messageToDelete):
@@ -1089,8 +1146,9 @@ def toWriteReasonForRefusal(message, idActive, messageToDelete):
     ro.switcherActiveToRefusal(ao.getActiveOrder(idActive), message.text)
 
     bot.send_message(chat_id=message.chat.id,
-                     text=mk.infoActiveToRefusalText(idActive),
-                     reply_markup=mk.infoActiveToRefusalMenu())
+                     text=mk.infoActiveToRefusalText(idActive,
+                                                     db.getLanguage(message.chat.id)),
+                     reply_markup=mk.infoActiveToRefusalMenu(db.getLanguage(message.chat.id)))
 
 
 def update_catalog_page(message, page):
@@ -1175,8 +1233,9 @@ def handler_file(message):
                 bot.send_photo(chat_id=message.chat.id,
                                photo=open(post.getPost(message.chat.id).dirMedia, 'rb'),
                                caption=mk.adminFinalPostText(textRU=post.getPost(message.chat.id).textRU,
-                                                             textEN=post.getPost(message.chat.id).textEN),
-                               reply_markup=mk.adminFinalPostMenu(),
+                                                             textEN=post.getPost(message.chat.id).textEN,
+                                                             language=db.getLanguage(message.chat.id)),
+                               reply_markup=mk.adminFinalPostMenu(db.getLanguage(message.chat.id)),
                                parse_mode='MARKDOWN')
 
             if message.content_type == 'video' and post.getPost(message.chat.id).dirType == "video":
@@ -1194,8 +1253,9 @@ def handler_file(message):
                 bot.send_video(chat_id=message.chat.id,
                                video=open(post.getPost(message.chat.id).dirMedia, 'rb'),
                                caption=mk.adminFinalPostText(textRU=post.getPost(message.chat.id).textRU,
-                                                             textEN=post.getPost(message.chat.id).textEN),
-                               reply_markup=mk.adminFinalPostMenu(),
+                                                             textEN=post.getPost(message.chat.id).textEN,
+                                                             language=db.getLanguage(message.chat.id)),
+                               reply_markup=mk.adminFinalPostMenu(db.getLanguage(message.chat.id)),
                                parse_mode='MARKDOWN')
 
         elif adminAddProductChecker.get(message.chat.id):
@@ -1216,8 +1276,9 @@ def handler_file(message):
 
                 bot.send_photo(chat_id=message.chat.id,
                                photo=open(npm.getNewProd(message.chat.id).dirMedia, 'rb'),
-                               caption=mk.adminAddProductMediaText(npm.getNewProd(message.chat.id)),
-                               reply_markup=mk.adminFinalProductMenu(),
+                               caption=mk.adminAddProductMediaText(npm.getNewProd(message.chat.id),
+                                                                   db.getLanguage(message.chat.id)),
+                               reply_markup=mk.adminFinalProductMenu(db.getLanguage(message.chat.id)),
                                parse_mode='MARKDOWN')
 
             if message.content_type == 'video' and npm.getNewProd(message.chat.id).typeMedia == "video":
@@ -1234,8 +1295,9 @@ def handler_file(message):
 
                 bot.send_video(chat_id=message.chat.id,
                                video=open(npm.getNewProd(message.chat.id).dirMedia, 'rb'),
-                               caption=mk.adminAddProductMediaText(npm.getNewProd(message.chat.id)),
-                               reply_markup=mk.adminFinalProductMenu(),
+                               caption=mk.adminAddProductMediaText(npm.getNewProd(message.chat.id),
+                                                                   db.getLanguage(message.chat.id)),
+                               reply_markup=mk.adminFinalProductMenu(db.getLanguage(message.chat.id)),
                                parse_mode='MARKDOWN')
 @bot.message_handler(content_types=['location'])
 def getLocation(message):
