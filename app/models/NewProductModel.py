@@ -5,7 +5,7 @@ class Productnew(db.Model):
     __tablename__ = 'newproduct'
 
     id = db.Column(db.Integer, primary_key=True)
-    chatId = db.Column(db.Integer, nullable=True)
+    chatId = db.Column(db.BigInteger, nullable=True)
     name = db.Column(db.String, nullable=True)
     price = db.Column(db.Integer, nullable=True)
     typeMedia = db.Column(db.String, nullable=True)
@@ -92,6 +92,32 @@ def setDirMedia(chatId, dirMedia):
                 return 1
             else:
                 return 0
+
+    except Exception as e:
+        return print(e, "\nsetDirMedia error")
+
+def addDirMedia(chatId, dirMedia):
+    try:
+        with app.app_context():
+            if Productnew.query.filter_by(chatId=chatId).first():
+                newprod = Productnew.query.filter_by(chatId=chatId).first()
+                newprod.dirMedia += dirMedia
+                db.session.commit()
+                return 1
+            else:
+                return 0
+
+    except Exception as e:
+        return print(e, "\nsetDirMedia error")
+
+def countMedia(chatId):
+    try:
+        with app.app_context():
+            if Productnew.query.filter_by(chatId=chatId).first():
+                newprod = Productnew.query.filter_by(chatId=chatId).first()
+                return len(list(newprod.dirMedia.split('#'))) // 2
+            else:
+                return Exception
 
     except Exception as e:
         return print(e, "\nsetDirMedia error")

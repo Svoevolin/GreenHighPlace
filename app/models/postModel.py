@@ -4,7 +4,7 @@ class Post(db.Model):
     __tablename__ = 'post'
 
     id = db.Column(db.Integer, primary_key=True)
-    chatId = db.Column(db.Integer, nullable=False)
+    chatId = db.Column(db.BigInteger, nullable=False)
     textRU = db.Column(db.String, nullable=True)
     textEN = db.Column(db.String, nullable=True)
     dirMedia = db.Column(db.String, nullable=True)

@@ -1776,12 +1776,14 @@ def adminAddProductMediaMenu(language):
         return types.InlineKeyboardMarkup(row_width=1).add(
             types.InlineKeyboardButton("Видео", callback_data=f"attachVideoToProduct"),
             types.InlineKeyboardButton("Фото", callback_data=f"attachPhotoToProduct"),
+            types.InlineKeyboardButton("Несколько медиа", callback_data=f"attachMediaGroupToProduct"),
             types.InlineKeyboardButton("Сбросить", callback_data="resetProduct")
         )
     if language == "EN":
         return types.InlineKeyboardMarkup(row_width=1).add(
             types.InlineKeyboardButton("Video", callback_data=f"attachVideoToProduct"),
             types.InlineKeyboardButton("Photo", callback_data=f"attachPhotoToProduct"),
+            types.InlineKeyboardButton("Media group", callback_data=f"attachMediaGroupToProduct"),
             types.InlineKeyboardButton("Reset", callback_data="resetProduct")
         )
 def adminFinalProductMenu(language):
@@ -1827,3 +1829,44 @@ def adminSwitcherLanguageMenu():
     languageProfileEN = types.InlineKeyboardButton("English", callback_data="adminToEnLanguage")
     languageProfileRU = types.InlineKeyboardButton("Русский", callback_data="adminToRuLanguage")
     return switchLanguageProfile.add(languageProfileEN, languageProfileRU)
+
+
+def adminTextMediaGroupToProduct(language):
+    if language == "RU":
+        return "ПО ОДНОМУ отправляйте фото/видео в формате png,jpg/mp4 (от 2 до 10 в сумме)"
+    if language == "EN":
+        return "Send photos/videos in png,jpg/mp4 format ONE BY ONE (from 2 to 10 in total)"
+
+def adminMenuMediaGroupToProduct(language):
+    if language == "RU":
+        return types.InlineKeyboardMarkup(row_width=1).add(
+            types.InlineKeyboardButton("Сбросить", callback_data="resetProduct")
+        )
+    if language == "EN":
+        return types.InlineKeyboardMarkup(row_width=1).add(
+            types.InlineKeyboardButton("Reset", callback_data="resetProduct")
+        )
+
+def videoHadUploaded(language):
+    if language == "RU":
+        return 'Видео было добавлено'
+    if language == "EN":
+        return 'Video has uploaded'
+
+def photoHasUploaded(language):
+    if language == "RU":
+        return 'Фото было добавлено'
+    if language == "EN":
+        return 'Photo has uploaded'
+
+def askToAddMoreMediaMenu(countMedia, language):
+    if language == "RU":
+        menu = types.InlineKeyboardMarkup(row_width=1)
+        if countMedia < 10:
+            menu.add(types.InlineKeyboardButton("Добавить еще", callback_data="addMoreMedia"))
+        if countMedia >= 2:
+            menu.add(types.InlineKeyboardButton("Завершить прикрепление", callback_data="finishAttachment"))
+        menu.add(types.InlineKeyboardButton)
+        return types.InlineKeyboardMarkup(row_width=1).add(
+
+        )

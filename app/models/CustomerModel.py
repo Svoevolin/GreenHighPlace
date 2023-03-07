@@ -8,7 +8,7 @@ class Customer(db.Model):
     __tablename__ = 'customer'
 
     id = db.Column(db.Integer, primary_key=True)
-    chatId = db.Column(db.Integer, nullable=False)
+    chatId = db.Column(db.BigInteger, nullable=False)
     language = db.Column(db.String(64), nullable=True)
     username = db.Column(db.String(64), default="N/A")
     dateLogin = db.Column(db.String(64), default="N/A")

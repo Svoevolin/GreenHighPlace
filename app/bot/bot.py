@@ -851,6 +851,14 @@ def language(call):
                               text=mk.adminPostToAttachPhoto(db.getLanguage(call.message.chat.id)),
                               reply_markup=mk.adminAddProductNameMenu(db.getLanguage(call.message.chat.id)))
 
+    if call.data == "attachMediaGroupToProduct":
+        npm.setType(call.message.chat.id, "mediaGroup")
+        bot.edit_message_text(chat_id=call.message.chat.id,
+                              message_id=call.message.message_id,
+                              text=mk.adminTextMediaGroupToProduct(db.getLanguage(call.message.chat.id)),
+                              reply_markup=mk.adminMenuMediaGroupToProduct(db.getLanguage(call.message.chat.id)))
+
+
     if call.data == 'resetProduct':
 
         bot.clear_step_handler_by_chat_id(call.message.chat.id)
@@ -990,6 +998,8 @@ def language(call):
                               message_id=call.message.message_id,
                               text=mk.helloBoss(db.getLanguage(call.message.chat.id)),
                               reply_markup=mk.helloMenu(db.getLanguage(call.message.chat.id)))
+
+
 
 
 def toWritePriceChangingProduct(message, idProduct):
@@ -1299,6 +1309,28 @@ def handler_file(message):
                                                                    db.getLanguage(message.chat.id)),
                                reply_markup=mk.adminFinalProductMenu(db.getLanguage(message.chat.id)),
                                parse_mode='MARKDOWN')
+
+            if message.content_type == 'photo' and npm.getNewProd(message.chat.id).typeMedia == "mediaGroup":
+                file_info = bot.get_file(message.photo[len(message.photo) - 1].file_id)
+                downloaded_file = bot.download_file(file_info.file_path)
+
+                print(file_info.file_unique_id)
+
+                src = f'{pathlib.Path.cwd()}/../files/{file_info.file_unique_id}.jpg'
+
+                with open(src, 'wb') as new_file:
+                    new_file.write(downloaded_file)
+
+                npm.addDirMedia(message.chat.id, f"photo#{src}#")
+
+                bot.send_photo(chat_id=message.chat.id,
+                               photo=open(npm.getNewProd(message.chat.id).dirMedia, 'rb'),
+                               caption=mk.adminAddProductMediaText(npm.getNewProd(message.chat.id),
+                                                                   db.getLanguage(message.chat.id)),
+                               reply_markup=mk.adminFinalProductMenu(db.getLanguage(message.chat.id)),
+                               parse_mode='MARKDOWN')
+            if message.content_type == 'video' and npm.getNewProd(message.chat.id).typeMedia == "mediaGroup":
+                pass
 @bot.message_handler(content_types=['location'])
 def getLocation(message):
     print(message.location.latitude, message.location.longitude)

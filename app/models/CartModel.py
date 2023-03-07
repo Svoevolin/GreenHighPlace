@@ -11,7 +11,7 @@ class Cart(db.Model):
     __tablename__ = 'cart'
 
     id = db.Column(db.Integer, primary_key=True)
-    customer_id = db.Column(db.Integer, nullable=False)
+    customer_id = db.Column(db.BigInteger, nullable=False)
     nameOfProduct = db.Column(db.String, nullable=False)
     numOfProducts = db.Column(db.Integer, nullable=False)
     idFromProduct = db.Column(db.Integer, nullable=False)

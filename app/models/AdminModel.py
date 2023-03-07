@@ -8,7 +8,7 @@ class Admin(db.Model):
     __tablename__ = 'admin'
 
     id = db.Column(db.Integer, primary_key=True)
-    chatId = db.Column(db.Integer, nullable=False)
+    chatId = db.Column(db.BigInteger, nullable=False)
     def __repr__(self):
         return f'{self.id}-#-#-{self.chatId}'
 def addAdmin(chatId: int):

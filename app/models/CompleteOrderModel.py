@@ -15,7 +15,7 @@ class CompleteOrder(db.Model):
     __tablename__ = 'complete'
 
     id = db.Column(db.Integer, primary_key=True)
-    customer_id = db.Column(db.Integer, nullable=False)
+    customer_id = db.Column(db.BigInteger, nullable=False)
     items = db.Column(db.String, nullable=False)
     fullprice = db.Column(db.Integer, nullable=False)
     datetime = db.Column(db.String(64), nullable=False)
