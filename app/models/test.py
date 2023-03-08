@@ -1,5 +1,4 @@
 from datetime import datetime
-from datetime import date
-from datetime import time
+import pytz
 
-str(datetime.now().strftime("%d/%m/%Y %H:%M"))
+print(str(datetime.now(pytz.timezone('Asia/Bangkok')).strftime("%d/%m/%Y %H:%M")))

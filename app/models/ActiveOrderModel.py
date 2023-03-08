@@ -3,6 +3,8 @@ from .CustomerModel import Customer
 from app.models import CartModel as cart
 from datetime import datetime
 from app.models import ProductModel as pm
+import pytz
+
 
 
 # from CustomerModel import Customer
@@ -39,7 +41,7 @@ def addActiveOrder(customer_id: int, fullprice: int, methodpay: str, address: st
                 items += product.nameOfProduct + "#" + str(product.numOfProducts) + \
                          "#" + str(pm.getPrice(product.idFromProduct)) + ","
 
-            dayandtime = str(datetime.now().strftime("%d/%m/%Y %H:%M"))
+            dayandtime = str(datetime.now(pytz.timezone('Asia/Bangkok')).strftime("%d/%m/%Y %H:%M"))
             if methodpay == "forCash":
 
                 order = ActiveOrder(customer_id=customer_id,

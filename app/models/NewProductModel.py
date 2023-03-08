@@ -9,7 +9,7 @@ class Productnew(db.Model):
     name = db.Column(db.String, nullable=True)
     price = db.Column(db.Integer, nullable=True)
     typeMedia = db.Column(db.String, nullable=True)
-    dirMedia = db.Column(db.String, nullable=True)
+    dirMedia = db.Column(db.String, nullable=True, default="")
     infoAbout = db.Column(db.String, nullable=True)
 
     def __repr__(self):
@@ -122,6 +122,23 @@ def countMedia(chatId):
     except Exception as e:
         return print(e, "\nsetDirMedia error")
 
+def getMedias(chatId):
+    try:
+        with app.app_context():
+            if Productnew.query.filter_by(chatId=chatId).first():
+                newprod = Productnew.query.filter_by(chatId=chatId).first()
+                print(newprod.dirMedia)
+                medias = list()
+                # 1 2 3 4 5 6 7 8, 1 3 5 7 9 11 13 15
+                for i in range(len(list(newprod.dirMedia.split('#'))) // 2):
+                    medias.append(newprod.dirMedia.split('#')[2 * (i + 1) - 1])
+                print(medias)
+                return medias
+            else:
+                return Exception
+
+    except Exception as e:
+        return print(e, "\nsetDirMedia error")
 def getNewProd(chatId: int):
     try:
         with app.app_context():

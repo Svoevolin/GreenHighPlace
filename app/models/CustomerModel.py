@@ -1,5 +1,4 @@
 from app.config import db, app
-
 # import os,sys
 # sys.path.insert(1, os.path.join(sys.path[0], '../'))
 # from config import app, db
@@ -51,8 +50,8 @@ def getCustomer(chatId: int):
 def getAllCustomers():
     try:
         with app.app_context():
-
-            return Customer.query.filter(Customer.id is not None).all()
+            x = list(map(lambda x: x, Customer.query.filter(Customer.id is not None).all()))
+            return x
 
     except Exception as e:
         return print(e, "\ngetAllCustomers error")

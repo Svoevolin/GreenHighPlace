@@ -7,10 +7,10 @@ hideMenu = types.ReplyKeyboardRemove()
 
 # до меню профиль-купить
 
-toBuyMarkupRU = "Купить"
-toProfileMarkupRU = "Профиль"
-toBuyMarkupEN = "Buy"
-toProfileMarkupEN = "Profile"
+toBuyMarkupRU = "Купить 🛍"
+toProfileMarkupRU = "Профиль 👤"
+toBuyMarkupEN = "Buy 🛍"
+toProfileMarkupEN = "Profile 👤"
 
 start_msg = '''
 Hi!
@@ -21,8 +21,8 @@ Choose language
     '''
 
 switchLanguage = types.InlineKeyboardMarkup(row_width=1)
-languageEN = types.InlineKeyboardButton("English", callback_data="EN")
-languageRU = types.InlineKeyboardButton("Русский", callback_data="RU")
+languageEN = types.InlineKeyboardButton("English 🇺🇸", callback_data="EN")
+languageRU = types.InlineKeyboardButton("Русский 🇷🇺", callback_data="RU")
 switchLanguage.add(languageEN, languageRU)
 
 
@@ -46,9 +46,9 @@ def askLocation(language: str):
         return "Write your address or send geolocation"
 
 
-sendLocationRU = types.KeyboardButton("Отправить геолокацию", request_location=True)
-writeLocationRU = types.KeyboardButton("Написать адрес текстом")
-passLocationRU = types.KeyboardButton("Пропустить сейчас")
+sendLocationRU = types.KeyboardButton("Отправить геолокацию 📍", request_location=True)
+writeLocationRU = types.KeyboardButton("Написать адрес текстом 🏘")
+passLocationRU = types.KeyboardButton("Пропустить сейчас ➡️")
 sendLocationEN = types.KeyboardButton("Send location", request_location=True)
 writeLocationEN = types.KeyboardButton("Write the address in text")
 passLocationEN = types.KeyboardButton("Pass now")
@@ -80,9 +80,8 @@ def menuBuyProfile(language: str):
         return menuBuyProfile.add(toBuyEN, toProfileEN)
 
 
-passCommentRU = types.InlineKeyboardButton("Пропустить", callback_data="passCommentAdress")
-# toBackRU = types.InlineKeyboardButton("Назад", callback_data="toBackFromCommentAdress")
-passCommentEN = types.InlineKeyboardButton("Pass", callback_data="passCommentAdress")
+passCommentRU = types.InlineKeyboardButton("Пропустить ➡️", callback_data="passCommentAdress")
+passCommentEN = types.InlineKeyboardButton("Pass ➡️", callback_data="passCommentAdress")
 
 
 # toBackEN = types.InlineKeyboardButton("To back", callback_data="toBackFromCommentAdress")
@@ -128,10 +127,10 @@ def addressAddedSuccessfully(language: str):
         return 'Address has added successfully!\nYou can go to buy!'
 
 
-toShopRU = types.InlineKeyboardButton("В магазин", callback_data="toShop")
-toShopEN = types.InlineKeyboardButton("To shop", callback_data="toShop")
-toProfileRU = types.InlineKeyboardButton("В профиль", callback_data="backToProfile")
-toProfileEN = types.InlineKeyboardButton("To profile", callback_data="backToProfile")
+toShopRU = types.InlineKeyboardButton("В магазин 🛍", callback_data="toShop")
+toShopEN = types.InlineKeyboardButton("To shop 🛍", callback_data="toShop")
+toProfileRU = types.InlineKeyboardButton("В профиль 👤", callback_data="backToProfile")
+toProfileEN = types.InlineKeyboardButton("To profile 👤", callback_data="backToProfile")
 def toShop(language: str):
     toShop = types.InlineKeyboardMarkup(row_width=1)
 
@@ -152,42 +151,40 @@ def indexAddreessLater(language: str):
 
 # профиль
 profileMarkup = types.InlineKeyboardMarkup(row_width=1)
-profileButtonRU1 = types.InlineKeyboardButton("Изменить адрес", callback_data="changeAddress")
-profileButtonRU2 = types.InlineKeyboardButton("Мои заказы", callback_data="myOrders")
-profileButtonRU3 = types.InlineKeyboardButton("Корзина", callback_data="bin")
-profileButtonRU4 = types.InlineKeyboardButton("Реферальная система", callback_data="refSystem")
-# profileButtonRU5 = types.InlineKeyboardButton("Указать контакт", callback_data="pointContant")
-profileButtonRU6 = types.InlineKeyboardButton("Изменить язык", callback_data="changeLanguage")
+profileButtonRU1 = types.InlineKeyboardButton("Изменить адрес 🏘", callback_data="changeAddress")
+profileButtonRU2 = types.InlineKeyboardButton("Мои заказы 🛍", callback_data="myOrders")
+profileButtonRU3 = types.InlineKeyboardButton("Корзина 🛒", callback_data="bin")
+# profileButtonRU4 = types.InlineKeyboardButton("Реферальная система", callback_data="refSystem")
+profileButtonRU6 = types.InlineKeyboardButton("Изменить язык 🇷🇺🇺🇸", callback_data="changeLanguage")
 
-profileButtonEN1 = types.InlineKeyboardButton("Change address", callback_data="changeAddress")
-profileButtonEN2 = types.InlineKeyboardButton("My orders", callback_data="myOrders")
-profileButtonEN3 = types.InlineKeyboardButton("Bin", callback_data="bin")
-profileButtonEN4 = types.InlineKeyboardButton("Ref system", callback_data="refSystem")
-# profileButtonEN5 = types.InlineKeyboardButton("Point contact", callback_data="pointContant")
-profileButtonEN6 = types.InlineKeyboardButton("Change language", callback_data="changeLanguage")
+profileButtonEN1 = types.InlineKeyboardButton("Change address 🏘", callback_data="changeAddress")
+profileButtonEN2 = types.InlineKeyboardButton("My orders 🛍", callback_data="myOrders")
+profileButtonEN3 = types.InlineKeyboardButton("Cart 🛒", callback_data="bin")
+# profileButtonEN4 = types.InlineKeyboardButton("Ref system", callback_data="refSystem")
+profileButtonEN6 = types.InlineKeyboardButton("Change language 🇷🇺🇺🇸", callback_data="changeLanguage")
 
 
 def profileMenu(language: str):
     profileMarkup = types.InlineKeyboardMarkup(row_width=1)
     if language == "RU":
-        return profileMarkup.add(profileButtonRU1, profileButtonRU2, profileButtonRU3, profileButtonRU4,
+        return profileMarkup.add(profileButtonRU3, profileButtonRU2, profileButtonRU1,
                                  profileButtonRU6)
 
     elif language == "EN":
-        return profileMarkup.add(profileButtonEN1, profileButtonEN2, profileButtonEN3, profileButtonEN4,
+        return profileMarkup.add(profileButtonEN3, profileButtonEN2, profileButtonEN1,
                                  profileButtonEN6)
 
 
 def getInfoProfile(language: str, address: str, comment: str):
     if language == "RU":
-        return f'''Профиль
-Адрес: {address if address is not None else "не указан"}
-Комментарий к адресу: {comment if comment is not None else "не указан"}'''
+        return f'''*Профиль*
+*Адрес:* {address if address is not None else "не указан"}
+*Комментарий к адресу:* {comment if comment is not None else "не указан"}'''
 
     elif language == "EN":
-        return f'''Profile
-Address: {address if address is not None else "didn't point"}
-Comment for address: {comment if comment is not None else "didn't point"}'''
+        return f'''*Profile*
+*Address:* {address if address is not None else "didn't point"}
+*Comment for address:* {comment if comment is not None else "didn't point"}'''
 
 
 def textOfChangingLanguage(language: str):
@@ -199,8 +196,8 @@ def textOfChangingLanguage(language: str):
 
 
 switchLanguageProfile = types.InlineKeyboardMarkup(row_width=1)
-languageProfileEN = types.InlineKeyboardButton("English", callback_data="profileEN")
-languageProfileRU = types.InlineKeyboardButton("Русский", callback_data="profileRU")
+languageProfileEN = types.InlineKeyboardButton("English 🇺🇸", callback_data="profileEN")
+languageProfileRU = types.InlineKeyboardButton("Русский 🇷🇺", callback_data="profileRU")
 switchLanguageProfile.add(languageProfileEN, languageProfileRU)
 
 
@@ -222,9 +219,9 @@ def textShop(language, products):
             return "List of products\nChoose you needed and push"
     else:
         if language == "RU":
-            return "Сейчас товаров нет в магазине ;("
+            return "Сейчас товаров нет в магазине 😔"
         if language == "EN":
-            return "Now at shop there aren't products"
+            return "Now at shop there aren't products 😔"
 
 
 def sliderShop(page, products, language):
@@ -242,12 +239,12 @@ def sliderShop(page, products, language):
 
         if language == "RU":
 
-            toBackButton = types.InlineKeyboardButton('Назад', callback_data='backToProfile')
+            toBackButton = types.InlineKeyboardButton('Назад ⬅️', callback_data='backToProfile')
             paginator.add_after(toBackButton)
 
         elif language == "EN":
 
-            toBackButton = types.InlineKeyboardButton('Go back', callback_data='backToProfile')
+            toBackButton = types.InlineKeyboardButton('Back ⬅️', callback_data='backToProfile')
             paginator.add_after(toBackButton)
 
         return paginator.markup
@@ -255,10 +252,10 @@ def sliderShop(page, products, language):
     else:
         menuBack = types.InlineKeyboardMarkup(row_width=1)
         if language == "RU":
-            toBack = types.InlineKeyboardButton("Назад", callback_data="backToProfile")
+            toBack = types.InlineKeyboardButton("Назад ⬅️", callback_data="backToProfile")
             return menuBack.add(toBack)
         if language == "EN":
-            toBack = types.InlineKeyboardButton("Back", callback_data="backToProfile")
+            toBack = types.InlineKeyboardButton("Back ⬅️", callback_data="backToProfile")
             return menuBack.add(toBack)
 
 
@@ -297,8 +294,8 @@ def sliderProduct(page, name, price, language):
 
         # toChooseNumberOf = types.InlineKeyboardButton('Указать количество', callback_data='toChooseNumberOf')
         # toOrderDelivery = types.InlineKeyboardButton('Заказать доставку', callback_data='toOrderDelivery')
-        toCart = types.InlineKeyboardButton('В корзину', callback_data='toCart#{}#{}'.format(name, int(page)))
-        toBackButton = types.InlineKeyboardButton('Назад', callback_data='toShopFromVideo')
+        toCart = types.InlineKeyboardButton('В корзину 🛒', callback_data='toCart#{}#{}'.format(name, int(page)))
+        toBackButton = types.InlineKeyboardButton('Назад ⬅️', callback_data='toShopFromVideo')
         paginator.add_before(toCart)
         paginator.add_after(toBackButton)
 
@@ -306,8 +303,8 @@ def sliderProduct(page, name, price, language):
 
         # toChooseNumberOf = types.InlineKeyboardButton('Indicate quantity', callback_data='toChooseNumberOf')
         # toOrderDelivery = types.InlineKeyboardButton('Order delivery', callback_data='toOrderDelivery')
-        toCart = types.InlineKeyboardButton('Add to cart', callback_data='toCart#{}#{}'.format(name, int(page)))
-        toBackButton = types.InlineKeyboardButton('Back', callback_data='toShopFromVideo')
+        toCart = types.InlineKeyboardButton('Add to cart 🛒', callback_data='toCart#{}#{}'.format(name, int(page)))
+        toBackButton = types.InlineKeyboardButton('Back ⬅️', callback_data='toShopFromVideo')
 
         paginator.add_before(toCart)
         paginator.add_after(toBackButton)
@@ -327,20 +324,20 @@ def textTrash(products, language):
     if len(products) != 0:
 
         if language == "RU":
-            head = "Товаров в корзине: {}\n\nНажми на товар чтобы удалить или изменить".format(len(products))
+            head = "*Товаров в корзине:* {}\n\nНажми на товар чтобы удалить или изменить".format(len(products))
 
             return head
 
         if language == "EN":
-            head = "Items in the cart: {}\n\nTouch on product for delete or change".format(len(products))
+            head = "*Items in the cart:* {}\n\nTouch on product for delete or change".format(len(products))
 
             return head
 
     else:
         if language == "RU":
-            return "Твоя корзина пуста ;("
+            return "Твоя корзина пуста 🤷‍♀️"
         if language == "EN":
-            return "Your trash is empty ;("
+            return "Your cart is empty 🤷‍♀️"
 
 
 # def trashMenu(products, language):
@@ -403,39 +400,39 @@ def trashMenu(products, language):
                 totalsum += sum
 
                 if language == "RU":
-                    button = types.InlineKeyboardButton(f"{name} | {str(num)} грамм | {price * num} BATH",
+                    button = types.InlineKeyboardButton(f"🌿 {name} | {str(num)} грамм | {price * num} BATH",
                                                         callback_data=f"toEdit#{product.id}")
                     trashMenu.add(button)
                 if language == "EN":
-                    button = types.InlineKeyboardButton(f"{name} | {str(num)} gramm | {price * num} BATH",
+                    button = types.InlineKeyboardButton(f"🌿 {name} | {str(num)} gramm | {price * num} BATH",
                                                         callback_data=f"toEdit#{product.id}")
                     trashMenu.add(button)
 
             i += 1
 
         if language == "RU":
-            toDeliver = types.InlineKeyboardButton("Заказать | {} BATH".format(totalsum),
+            toDeliver = types.InlineKeyboardButton("🚚 Заказать | {} BATH".format(totalsum),
                                                    callback_data="toDeliver#{}".format(totalsum))
-            toClearBin = types.InlineKeyboardButton("Очистить корзину", callback_data="toClearBinWarning")
-            toBack = types.InlineKeyboardButton("Назад", callback_data="backToProfile")
+            toClearBin = types.InlineKeyboardButton("🧹 Очистить корзину", callback_data="toClearBinWarning")
+            toBack = types.InlineKeyboardButton("⬅ Назад️", callback_data="backToProfile")
             trashMenu.add(toDeliver, toClearBin, toBack)
 
         if language == "EN":
-            toDeliver = types.InlineKeyboardButton("Order | {} BATH".format(totalsum),
+            toDeliver = types.InlineKeyboardButton("🚚 Order | {} BATH".format(totalsum),
                                                    callback_data="toDeliver#{}".format(totalsum))
-            toClearBin = types.InlineKeyboardButton("Empty trash", callback_data="toClearBinWarning")
-            toBack = types.InlineKeyboardButton("To back", callback_data="backToProfile")
+            toClearBin = types.InlineKeyboardButton("🧹 Empty trash", callback_data="toClearBinWarning")
+            toBack = types.InlineKeyboardButton("⬅ Back️", callback_data="backToProfile")
             trashMenu.add(toDeliver, toClearBin, toBack)
 
 
 
     else:
         if language == "RU":
-            toBack = types.InlineKeyboardButton("Назад", callback_data="backToProfile")
+            toBack = types.InlineKeyboardButton("Назад ⬅️", callback_data="backToProfile")
             trashMenu.add(toBack)
 
         if language == "EN":
-            toBack = types.InlineKeyboardButton("To back", callback_data="backToProfile")
+            toBack = types.InlineKeyboardButton("Back ⬅️", callback_data="backToProfile")
             trashMenu.add(toBack)
 
     return trashMenu
@@ -453,25 +450,25 @@ def areYouSureMenu(language):
     areYouSure = types.InlineKeyboardMarkup(row_width=1)
 
     if language == "RU":
-        yes = types.InlineKeyboardButton("Очистить", callback_data="toClearBin")
-        no = types.InlineKeyboardButton("Назад", callback_data="bin")
+        yes = types.InlineKeyboardButton("Очистить 🧹", callback_data="toClearBin")
+        no = types.InlineKeyboardButton("Назад ⬅️", callback_data="bin")
         return areYouSure.add(yes, no)
 
     if language == "EN":
-        yes = types.InlineKeyboardButton("To empty", callback_data="toClearBin")
-        no = types.InlineKeyboardButton("Back", callback_data="bin")
+        yes = types.InlineKeyboardButton("To empty 🧹", callback_data="toClearBin")
+        no = types.InlineKeyboardButton("Back ⬅️", callback_data="bin")
         return areYouSure.add(yes, no)
 
 
 def beforeOrderText(address: str, comment: str, language: str):
     if address is not None:
         if language == "RU":
-            return f'''Адрес: {address}
-Комментарий к адресу: {comment if comment is not None else "не указан"}'''
+            return f'''*Адрес:* {address}
+*Комментарий к адресу:* {comment if comment is not None else "не указан"}'''
 
         elif language == "EN":
-            return f'''Address: {address}
-Comment for address: {comment if comment is not None else "didn't point"}'''
+            return f'''*Address:* {address}
+*Comment for address:* {comment if comment is not None else "didn't point"}'''
 
     else:
         if language == "RU":
@@ -486,17 +483,21 @@ def beforeOrderMenu(address: str, language: str, fullprice: int):
     if address is not None:
 
         if language == "RU":
-            confirm = types.InlineKeyboardButton("Подтвердить", callback_data="toConfirm#{}".format(fullprice))
-            badAddress = types.InlineKeyboardButton("Назад", callback_data="backToProfile")
+            confirm = types.InlineKeyboardButton("Подтвердить ✅", callback_data="toConfirm#{}".format(fullprice))
+            badAddress = types.InlineKeyboardButton("Назад ⬅️", callback_data="backToProfile")
             return confirmMenu.add(confirm, badAddress)
         if language == "EN":
-            confirm = types.InlineKeyboardButton("Confirm", callback_data="toConfirm#{}".format(fullprice))
-            badAddress = types.InlineKeyboardButton("Back", callback_data="backToProfile")
+            confirm = types.InlineKeyboardButton("Confirm ✅", callback_data="toConfirm#{}".format(fullprice))
+            badAddress = types.InlineKeyboardButton("Back ⬅️", callback_data="backToProfile")
             return confirmMenu.add(confirm, badAddress)
 
     else:
-        badAddress = types.InlineKeyboardButton("Back", callback_data="backToProfile")
-        return confirmMenu.add(badAddress)
+        if language == "RU":
+            badAddress = types.InlineKeyboardButton("Назад ⬅️", callback_data="backToProfile")
+            return confirmMenu.add(badAddress)
+        if language == "EN":
+            badAddress = types.InlineKeyboardButton("Back ⬅️", callback_data="backToProfile")
+            return confirmMenu.add(badAddress)
 
 
 def chooseMethodPayText(language: str):
@@ -511,16 +512,16 @@ def chooseMethodPayMenu(fullsum: int, language: str):
     methodsPay = types.InlineKeyboardMarkup(row_width=1)
 
     if language == "RU":
-        forCash = types.InlineKeyboardButton("Наличные", callback_data="forCash#{}".format(fullsum))
-        forCard = types.InlineKeyboardButton("Криптовалюта", callback_data="forCryptocurrency#{}".format(fullsum))
-        toBack = types.InlineKeyboardButton("Назад", callback_data="backToProfile")
-        return methodsPay.add(forCash, forCard, toBack)
+        forCash = types.InlineKeyboardButton("Наличные 💰", callback_data="forCash#{}".format(fullsum))
+        # forCard = types.InlineKeyboardButton("Криптовалюта", callback_data="forCryptocurrency#{}".format(fullsum))
+        toBack = types.InlineKeyboardButton("Назад ⬅️", callback_data="backToProfile")
+        return methodsPay.add(forCash, toBack)
 
     if language == "EN":
-        forCash = types.InlineKeyboardButton("Cash payment", callback_data="forCash#{}".format(fullsum))
-        forCard = types.InlineKeyboardButton("Сryptocurrency", callback_data="forCryptocurrency#{}".format(fullsum))
-        toBack = types.InlineKeyboardButton("Back", callback_data="backToProfile")
-        return methodsPay.add(forCash, forCard, toBack)
+        forCash = types.InlineKeyboardButton("Cash payment 💰", callback_data="forCash#{}".format(fullsum))
+        # forCard = types.InlineKeyboardButton("Сryptocurrency", callback_data="forCryptocurrency#{}".format(fullsum))
+        toBack = types.InlineKeyboardButton("Back ⬅️", callback_data="backToProfile")
+        return methodsPay.add(forCash, toBack)
 
 
 def infoOrderText(products: list, fullsum: int, address: str, comment: str, payment: str, language: str):
@@ -528,7 +529,7 @@ def infoOrderText(products: list, fullsum: int, address: str, comment: str, paym
 
         if language == "RU":
 
-            head = "Товаров: {}\n\nТовары:\n".format(len(products))
+            head = "*Товаров:* {}\n\n*Товары:*  \n".format(len(products))
 
             for product in products:
 
@@ -540,24 +541,24 @@ def infoOrderText(products: list, fullsum: int, address: str, comment: str, paym
                     num = product.numOfProducts
                     summ = num * price
 
-                    head += "{} - {} грамм - {} BATH\n".format(name, num, summ)
+                    head += "_{} - {} грамм - {} BATH_\n".format(name, num, summ)
 
                 else:
                     name = product.split('#')[0]
                     head += 'Товар "{}" удален из магазина\n'.format(name)
 
-            head += "\nИтого: {} BATH".format(fullsum)
-            head += "\n\n\nАдрес: {}" \
-                    "\n\nКомментарий к адресу: {}\n\n".format(address, comment if comment is not None else "не указан")
+            head += "\n*Итого:* {} BATH".format(fullsum)
+            head += "\n\n*Адрес:* {}" \
+                    "\n\n*Комментарий к адресу:* {}\n\n".format(address, comment if comment is not None else "не указан")
 
             if payment == "forCash":
-                head += "Метод оплаты: наличные"
+                head += "*Метод оплаты:* наличные"
 
             return head
 
         if language == "EN":
 
-            head = "Items: {}\n\nItems:\n".format(len(products))
+            head = "*Items:* {}\n\n*Items:*\n".format(len(products))
 
             for product in products:
 
@@ -569,54 +570,51 @@ def infoOrderText(products: list, fullsum: int, address: str, comment: str, paym
                     num = product.numOfProducts
                     summ = num * price
 
-                    head += "{} - {} gramm - {} BATH\n".format(name, num, summ)
+                    head += "_{} - {} gramm - {} BATH_\n".format(name, num, summ)
 
                 else:
                     name = product.split('#')[0]
                     head += 'Item "{}" was delete from shop\n'.format(name)
 
-            head += "\nTotal: {} BATH".format(fullsum)
-            head += "\n\n\nAddress: {}" \
-                    "\n\nComment for address: {}\n\n".format(address,
+            head += "\n*Total:* {} BATH".format(fullsum)
+            head += "\n\n*Address:* {}" \
+                    "\n\n*Comment for address:* {}\n\n".format(address,
                                                              comment if comment is not None else "didn't point")
 
             if payment == "forCash":
-                head += "Payment: cash"
+                head += "*Payment:* cash"
 
             return head
 
     else:
-        if language == "RU":
-            return "Твоя корзина пуста ;("
-        if language == "EN":
-            return "Your trash is empty ;("
+        pass
 
 
 def infoOrderMenu(fullprice: int, payment: str, language):
     orderMenu = types.InlineKeyboardMarkup(row_width=1)
 
     if language == "RU":
-        orderConfirm = types.InlineKeyboardButton("Подтвердить",
+        orderConfirm = types.InlineKeyboardButton("Подтвердить ✅",
                                                   callback_data="orderConfirm#{}#{}".format(fullprice, payment))
-        orderRefuse = types.InlineKeyboardButton("Назад", callback_data="backToProfile")
+        orderRefuse = types.InlineKeyboardButton("Назад ⬅️", callback_data="backToProfile")
         return orderMenu.add(orderConfirm, orderRefuse)
 
     if language == "EN":
-        orderConfirm = types.InlineKeyboardButton("Confirm",
+        orderConfirm = types.InlineKeyboardButton("Confirm ✅",
                                                   callback_data="orderConfirm#{}#{}".format(fullprice, payment))
-        orderRefuse = types.InlineKeyboardButton("Back", callback_data="backToProfile")
+        orderRefuse = types.InlineKeyboardButton("Back ⬅️", callback_data="backToProfile")
         return orderMenu.add(orderConfirm, orderRefuse)
 
 
 def confirmedOrderText(numberOfOrder: int, language: str):
     if language == "RU":
-        return f'''Номер заказа: №{numberOfOrder}
-Заказ успешно создан
+        return f'''*Номер заказа:* №{numberOfOrder}
+*Заказ успешно создан*
 Мы оповестим тебя, курьер примет заказ'''
 
     if language == "EN":
-        return f'''Number of order: №{numberOfOrder}
-Order created succesfully
+        return f'''*Number of order:* №{numberOfOrder}
+*Order created succesfully*
 We'll say you, when courier accepted the order'''
 
 
@@ -624,13 +622,13 @@ def confirmedOrderMenu(numberOfOrder: int, language: str):
     confirmedOrderMenu = types.InlineKeyboardMarkup(row_width=1)
 
     if language == "RU":
-        toCurrentOrder = types.InlineKeyboardButton("К заказу", callback_data="toCurrentOrder#{}".format(numberOfOrder))
-        toBack = types.InlineKeyboardButton("Назад", callback_data="backToProfile")
+        toCurrentOrder = types.InlineKeyboardButton("К заказу 🛍", callback_data="toCurrentOrder#{}".format(numberOfOrder))
+        toBack = types.InlineKeyboardButton("Назад ⬅️", callback_data="backToProfile")
         return confirmedOrderMenu.add(toCurrentOrder, toBack)
 
     if language == "EN":
-        toCurrentOrder = types.InlineKeyboardButton("To order", callback_data="toCurrentOrder#{}".format(numberOfOrder))
-        toBack = types.InlineKeyboardButton("Back", callback_data="backToProfile")
+        toCurrentOrder = types.InlineKeyboardButton("To order 🛍", callback_data="toCurrentOrder#{}".format(numberOfOrder))
+        toBack = types.InlineKeyboardButton("Back ⬅️", callback_data="backToProfile")
         return confirmedOrderMenu.add(toCurrentOrder, toBack)
 
 
@@ -644,16 +642,16 @@ class sliderOrderPaginator(InlineKeyboardPaginator):
 def textOrder(active, refusal, complete, language):
     if len(active + refusal + complete) != 0:
         if language == "RU":
-            return 'Все ваши заказы:\n\n🟡 - заказ в процессе\n🔴 - заказ отменён\n🟢 - заказ завершён'
+            return '*Все ваши заказы:*\n\n🟡 - заказ в процессе\n🔴 - заказ отменён\n🟢 - заказ завершён'
 
         if language == "EN":
-            return 'All your orders:\n\n🟡 - active order\n🔴 - refused order\n🟢 - completed order'
+            return '*All your orders:*\n\n🟡 - active order\n🔴 - refused order\n🟢 - completed order'
     else:
         if language == "RU":
-            return 'У тебя еще нет заказов ;('
+            return 'У тебя еще нет заказов 🤷‍♀️'
 
         if language == "EN":
-            return "You haven't orders yet ;("
+            return "You haven't orders yet 🤷‍♀️"
 
 
 def sliderOrder(page, active, refusal, complete, language):
@@ -699,12 +697,12 @@ def sliderOrder(page, active, refusal, complete, language):
 
         if language == "RU":
 
-            toBackButton = types.InlineKeyboardButton('Назад', callback_data='backToProfile')
+            toBackButton = types.InlineKeyboardButton('Назад ⬅️', callback_data='backToProfile')
             paginator.add_after(toBackButton)
 
         elif language == "EN":
 
-            toBackButton = types.InlineKeyboardButton('Back', callback_data='backToProfile')
+            toBackButton = types.InlineKeyboardButton('Back ⬅️', callback_data='backToProfile')
             paginator.add_after(toBackButton)
 
         return paginator.markup
@@ -713,10 +711,10 @@ def sliderOrder(page, active, refusal, complete, language):
         backingMenu = types.InlineKeyboardMarkup(row_width=1)
 
         if language == "RU":
-            backingButton = types.InlineKeyboardButton("Назад", callback_data="backToProfile")
+            backingButton = types.InlineKeyboardButton("Назад ⬅️", callback_data="backToProfile")
             return backingMenu.add(backingButton)
         if language == "EN":
-            backingButton = types.InlineKeyboardButton("Back", callback_data="backToProfile")
+            backingButton = types.InlineKeyboardButton("Back ⬅️", callback_data="backToProfile")
             return backingMenu.add(backingButton)
 
 
@@ -727,43 +725,43 @@ def showActiveOrderText(activeOrders: list, choosedOrder: int, language: str):
     order = str(order)
 
     if language == "RU":
-        head = f"Заказ №{order.split('-#-#-')[0]}\n\nТовары:\n"
+        head = f"*Заказ №{order.split('-#-#-')[0]}*\n\n*Товары:*\n"
         items = order.split('-#-#-')[2]
 
         for item in items[:-1].split(','):
-            head += "{} - {} грамм - {} BATH\n".format(
+            head += "_{} - {} грамм - {} BATH_\n".format(
                 item.split('#')[0],
                 item.split('#')[1],
                 int(item.split('#')[1]) * int(item.split('#')[2])
             )
 
-        head += f"\n\nИтого: {order.split('-#-#-')[3]} BATH"
-        head += f"\n\nДата и время заказа: {order.split('-#-#-')[4]}"
-        head += f"\n\nСпособ оплаты: {order.split('-#-#-')[5]}"
-        head += f"\n\nАдрес для заказа: {order.split('-#-#-')[7]}"
-        head += f"\n\nКомментарий к адресу: " \
+        head += f"\n*Итого:* {order.split('-#-#-')[3]} BATH"
+        head += f"\n\n*Дата и время заказа:* {order.split('-#-#-')[4]}"
+        head += f"\n\n*Способ оплаты:* {order.split('-#-#-')[5]}"
+        head += f"\n\n*Адрес для заказа:* {order.split('-#-#-')[7]}"
+        head += f"\n\n*Комментарий к адресу:* " \
                 f"{order.split('-#-#-')[8] if order.split('-#-#-')[8] != 'None' else 'не указан'}"
-        head += f"\n\nСтатус заказа: {order.split('-#-#-')[6]}"
+        head += f"\n\n*Статус заказа:* {order.split('-#-#-')[6]}"
         return head
 
     if language == "EN":
-        head = f"Order №{order.split('-#-#-')[0]}\n\nItems:\n"
+        head = f"*Order №{order.split('-#-#-')[0]}*\n\n*Items:*\n"
         items = order.split('-#-#-')[2]
 
         for item in items[:-1].split(','):
-            head += "{} - {} gramm - {} BATH\n".format(
+            head += "_{} - {} gramm - {} BATH_\n".format(
                 item.split('#')[0],
                 item.split('#')[1],
                 int(item.split('#')[1]) * int(item.split('#')[2])
             )
 
-        head += f"\n\nTotal: {order.split('-#-#-')[3]} BATH"
-        head += f"\n\nDate and time order: {order.split('-#-#-')[4]}"
-        head += f"\n\nPayment: {'cash' if order.split('-#-#-')[5] == 'наличные' else '-'}"
-        head += f"\n\nAddress for order: {order.split('-#-#-')[7]}"
-        head += f"\n\nComment for address: " \
-                f"{order.split('-#-#-')[8] if order.split('-#-#-')[8] != 'None' else 'didnt point'}"
-        head += f"\n\nStatus order: {'waiting for courier' if order.split('-#-#-')[6] == 'ожидает курьера' else 'sent for delivety'}"
+        head += f"\n*Total:* {order.split('-#-#-')[3]} BATH"
+        head += f"\n\n*Date and time order:* {order.split('-#-#-')[4]}"
+        head += f"\n\n*Payment:* {'cash' if order.split('-#-#-')[5] == 'наличные' else '-'}"
+        head += f"\n\n*Address for order:* {order.split('-#-#-')[7]}"
+        head += f"\n\n*Comment for address:* " \
+                f"{order.split('-#-#-')[8] if order.split('-#-#-')[8] != 'None' else 'did not point'}"
+        head += f"\n\n*Status order:* {'waiting for courier' if order.split('-#-#-')[6] == 'ожидает курьера' else 'sent for delivety'}"
         return head
 
 
@@ -777,13 +775,13 @@ def showActiveOrderMenu(activeOrders: list, choosedOrder: int, language: str):
 
     if language == "RU":
         # добавить id ордера в колбэк дату
-        toWriteCourier = types.InlineKeyboardButton("Написать курьеру", callback_data=f"toWriteCourier#{idActive}")
-        toBack = types.InlineKeyboardButton("Назад", callback_data='myOrders')
+        toWriteCourier = types.InlineKeyboardButton("Написать курьеру ✏️", callback_data=f"toWriteCourier#{idActive}")
+        toBack = types.InlineKeyboardButton("Назад ⬅️", callback_data='myOrders')
         return showActiveOrderMenu.add(toWriteCourier, toBack)
 
     if language == "EN":
-        toWriteCourier = types.InlineKeyboardButton("To write courier", callback_data=f"toWriteCourier#{idActive}")
-        toBack = types.InlineKeyboardButton("Back", callback_data='myOrders')
+        toWriteCourier = types.InlineKeyboardButton("To write courier ✏️", callback_data=f"toWriteCourier#{idActive}")
+        toBack = types.InlineKeyboardButton("Back ⬅️", callback_data='myOrders')
         return showActiveOrderMenu.add(toWriteCourier, toBack)
 
 
@@ -794,43 +792,43 @@ def showCompleteOrderText(completeOrders: list, choosedOrder: int, language: str
     order = str(order)
 
     if language == "RU":
-        head = f"Заказ №{order.split('-#-#-')[9]}\n\nТовары:\n"
+        head = f"*Заказ №{order.split('-#-#-')[9]}*\n\n*Товары:*\n"
         items = order.split('-#-#-')[2]
 
         for item in items[:-1].split(','):
-            head += "{} - {} грамм - {} BATH\n".format(
+            head += "_{} - {} грамм - {} BATH_\n".format(
                 item.split('#')[0],
                 item.split('#')[1],
                 int(item.split('#')[1]) * int(item.split('#')[2])
             )
 
-        head += f"\n\nИтого: {order.split('-#-#-')[3]} BATH"
-        head += f"\n\nДата и время заказа: {order.split('-#-#-')[4]}"
-        head += f"\n\nСпособ оплаты: {order.split('-#-#-')[5]}"
-        head += f"\n\nАдрес для заказа: {order.split('-#-#-')[7]}"
-        head += f"\n\nКомментарий к адресу: " \
+        head += f"\n*Итого:* {order.split('-#-#-')[3]} BATH"
+        head += f"\n\n*Дата и время заказа:* {order.split('-#-#-')[4]}"
+        head += f"\n\n*Способ оплаты:* {order.split('-#-#-')[5]}"
+        head += f"\n\n*Адрес для заказа:* {order.split('-#-#-')[7]}"
+        head += f"\n\n*Комментарий к адресу:* " \
                 f"{order.split('-#-#-')[8] if order.split('-#-#-')[8] != 'None' else 'не указан'}"
-        head += f"\n\nЗакрытие заказа: {order.split('-#-#-')[6]}"
+        head += f"\n\n*Закрытие заказа:* {order.split('-#-#-')[6]}"
         return head
 
     if language == "EN":
-        head = f"Order №{order.split('-#-#-')[9]}\n\nItems:\n"
+        head = f"*Order №{order.split('-#-#-')[9]}*\n\n*Items:*\n"
         items = order.split('-#-#-')[2]
 
         for item in items[:-1].split(','):
-            head += "{} - {} gramm - {} BATH".format(
+            head += "_{} - {} gramm - {} BATH_\n".format(
                 item.split('#')[0],
                 item.split('#')[1],
                 int(item.split('#')[1]) * int(item.split('#')[2])
             )
 
-        head += f"\n\nTotal: {order.split('-#-#-')[3]} BATH"
-        head += f"\n\nDate and time order: {order.split('-#-#-')[4]}"
-        head += f"\n\nPayment: {'cash' if order.split('-#-#-')[5] == 'наличные' else '-'}"
-        head += f"\n\nAddress for order: {order.split('-#-#-')[7]}"
-        head += f"\n\nComment for address: " \
-                f"{order.split('-#-#-')[8] if order.split('-#-#-')[8] != 'None' else 'didnt point'}"
-        head += f"\n\nOrder closing: {order.split('-#-#-')[6]}"
+        head += f"\n*Total:* {order.split('-#-#-')[3]} BATH"
+        head += f"\n\n*Date and time order:* {order.split('-#-#-')[4]}"
+        head += f"\n\n*Payment:* {'cash' if order.split('-#-#-')[5] == 'наличные' else '-'}"
+        head += f"\n\n*Address for order:* {order.split('-#-#-')[7]}"
+        head += f"\n\n*Comment for address:* " \
+                f"{order.split('-#-#-')[8] if order.split('-#-#-')[8] != 'None' else 'did not point'}"
+        head += f"\n\n*Order closing:* {order.split('-#-#-')[6]}"
         return head
 
 
@@ -839,11 +837,11 @@ def showCompleteOrderMenu(language: str):
 
     if language == "RU":
         # добавить id ордера в колбэк дату
-        toBack = types.InlineKeyboardButton("Назад", callback_data='myOrders')
+        toBack = types.InlineKeyboardButton("Назад ⬅️", callback_data='myOrders')
         return showCompleteOrderMenu.add(toBack)
 
     if language == "EN":
-        toBack = types.InlineKeyboardButton("Back", callback_data='myOrders')
+        toBack = types.InlineKeyboardButton("Back ⬅️", callback_data='myOrders')
         return showCompleteOrderMenu.add(toBack)
 
 
@@ -854,45 +852,45 @@ def showRefusalOrderText(refusalOrders: list, choosedOrder: int, language: str):
     order = str(order)
 
     if language == "RU":
-        head = f"Заказ №{order.split('-#-#-')[9]}\n\nТовары:\n"
+        head = f"*Заказ №{order.split('-#-#-')[9]}*\n\n*Товары:*\n"
         items = order.split('-#-#-')[2]
 
         for item in items[:-1].split(','):
-            head += "{} - {} грамм - {} BATH\n".format(
+            head += "_{} - {} грамм - {} BATH_\n".format(
                 item.split('#')[0],
                 item.split('#')[1],
                 int(item.split('#')[1]) * int(item.split('#')[2])
             )
 
-        head += f"\n\nИтого: {order.split('-#-#-')[3]} BATH"
-        head += f"\n\nДата и время заказа: {order.split('-#-#-')[4]}"
-        head += f"\n\nСпособ оплаты: {order.split('-#-#-')[5]}"
-        head += f"\n\nАдрес для заказа: {order.split('-#-#-')[7]}"
-        head += f"\n\nКомментарий к адресу: " \
+        head += f"\n*Итого:* {order.split('-#-#-')[3]} BATH"
+        head += f"\n\n*Дата и время заказа:* {order.split('-#-#-')[4]}"
+        head += f"\n\n*Способ оплаты:* {order.split('-#-#-')[5]}"
+        head += f"\n\n*Адрес для заказа:* {order.split('-#-#-')[7]}"
+        head += f"\n\n*Комментарий к адресу:* " \
                 f"{order.split('-#-#-')[8] if order.split('-#-#-')[8] != 'None' else 'не указан'}"
-        head += f"\n\nЗакрытие заказа: {order.split('-#-#-')[6]}"
-        head += f"\nПричина закрытия: {order.split('-#-#-')[10]}"
+        head += f"\n\n*Закрытие заказа:* {order.split('-#-#-')[6]}"
+        head += f"\n*Причина закрытия:* {order.split('-#-#-')[10]}"
         return head
 
     if language == "EN":
-        head = f"Order №{order.split('-#-#-')[9]}\n\nItems:\n"
+        head = f"*Order №{order.split('-#-#-')[9]}*\n\n*Items:*\n"
         items = order.split('-#-#-')[2]
 
         for item in items[:-1].split(','):
-            head += "{} - {} gramm - {} BATH".format(
+            head += "_{} - {} gramm - {} BATH_\n".format(
                 item.split('#')[0],
                 item.split('#')[1],
                 int(item.split('#')[1]) * int(item.split('#')[2])
             )
 
-        head += f"\n\nTotal: {order.split('-#-#-')[3]} BATH"
-        head += f"\n\nDate and time order: {order.split('-#-#-')[4]}"
-        head += f"\n\nPayment: {'cash' if order.split('-#-#-')[5] == 'наличные' else '-'}"
-        head += f"\n\nAddress for order: {order.split('-#-#-')[7]}"
-        head += f"\n\nComment for address: " \
-                f"{order.split('-#-#-')[8] if order.split('-#-#-')[8] != 'None' else 'didnt point'}"
-        head += f"\n\nOrder closing: {order.split('-#-#-')[6]}"
-        head += f"\nReason of refusal: {order.split('-#-#-')[10]}"
+        head += f"\n*Total:* {order.split('-#-#-')[3]} BATH"
+        head += f"\n\n*Date and time order:* {order.split('-#-#-')[4]}"
+        head += f"\n\n*Payment:* {'cash' if order.split('-#-#-')[5] == 'наличные' else '-'}"
+        head += f"\n\n*Address for order:* {order.split('-#-#-')[7]}"
+        head += f"\n\n*Comment for address:* " \
+                f"{order.split('-#-#-')[8] if order.split('-#-#-')[8] != 'None' else 'did not point'}"
+        head += f"\n\n*Order closing:* {order.split('-#-#-')[6]}"
+        head += f"\n*Reason of refusal:* {order.split('-#-#-')[10]}"
         return head
 
 
@@ -925,8 +923,8 @@ def sliderChangeBin(page, product, language):
                                                  f"{pm.getPrice(product.idFromProduct) * product.numOfProducts} BATH",
                                                  callback_data='nowork')
 
-        toDeleteButton = types.InlineKeyboardButton('Удалить', callback_data=f'DeleteFromBin#{product.id}')
-        toBackButton = types.InlineKeyboardButton('Назад', callback_data='bin')
+        toDeleteButton = types.InlineKeyboardButton('Удалить ❌', callback_data=f'DeleteFromBin#{product.id}')
+        toBackButton = types.InlineKeyboardButton('Назад ⬅️', callback_data='bin')
         paginator.add_before(productInfo)
         paginator.add_after(toBackButton, toDeleteButton)
 
@@ -936,8 +934,8 @@ def sliderChangeBin(page, product, language):
                                                  f"{pm.getPrice(product.idFromProduct) * product.numOfProducts} BATH",
                                                  callback_data='nowork')
 
-        toDeleteButton = types.InlineKeyboardButton('Delete', callback_data=f'DeleteFromBin#{product.id}')
-        toBackButton = types.InlineKeyboardButton('Back', callback_data='bin')
+        toDeleteButton = types.InlineKeyboardButton('Delete ❌', callback_data=f'DeleteFromBin#{product.id}')
+        toBackButton = types.InlineKeyboardButton('Back ⬅️', callback_data='bin')
         paginator.add_before(productInfo)
         paginator.add_after(toBackButton, toDeleteButton)
 
@@ -1015,13 +1013,13 @@ def chooseListOrdersMenu(language):
         listActive = types.InlineKeyboardButton("Активные", callback_data="activeList")
         listRefusal = types.InlineKeyboardButton("Отмененные", callback_data="refusalList")
         listComplete = types.InlineKeyboardButton("Завершенные", callback_data="completeList")
-        toBack = types.InlineKeyboardButton("Назад", callback_data="toMainAdmin")
+        toBack = types.InlineKeyboardButton("Назад ⬅️", callback_data="toMainAdmin")
         return chooseListOrdersMenu.add(listActive, listRefusal, listComplete, toBack)
     if language == "EN":
         listActive = types.InlineKeyboardButton("Active", callback_data="activeList")
         listRefusal = types.InlineKeyboardButton("Canceled", callback_data="refusalList")
         listComplete = types.InlineKeyboardButton("Completed", callback_data="completeList")
-        toBack = types.InlineKeyboardButton("Back", callback_data="toMainAdmin")
+        toBack = types.InlineKeyboardButton("Back ⬅️", callback_data="toMainAdmin")
         return chooseListOrdersMenu.add(listActive, listRefusal, listComplete, toBack)
 
 class adminSliderOrderPaginator(InlineKeyboardPaginator):
@@ -1063,9 +1061,9 @@ def adminSliderOrderActive(page, active, language):
         paginator.add_before(adminLookActive)
         toBackButton =""
         if language == "RU":
-            toBackButton = types.InlineKeyboardButton('Назад', callback_data='adminOrders')
+            toBackButton = types.InlineKeyboardButton('Назад ⬅️', callback_data='adminOrders')
         if language == "EN":
-            toBackButton = types.InlineKeyboardButton('Back', callback_data='adminOrders')
+            toBackButton = types.InlineKeyboardButton('Back ⬅️', callback_data='adminOrders')
         paginator.add_after(toBackButton)
 
         return paginator.markup
@@ -1075,9 +1073,9 @@ def adminSliderOrderActive(page, active, language):
 
         backingButton = ""
         if language == "RU":
-            backingButton = types.InlineKeyboardButton('Назад', callback_data='adminOrders')
+            backingButton = types.InlineKeyboardButton('Назад ⬅️', callback_data='adminOrders')
         if language == "EN":
-            backingButton = types.InlineKeyboardButton('Back', callback_data='adminOrders')
+            backingButton = types.InlineKeyboardButton('Back ⬅️', callback_data='adminOrders')
         return backingMenu.add(backingButton)
 
 
@@ -1147,7 +1145,7 @@ def adminActiveInfoMenu(activeOrders: list, choosedOrder: int, language):
         button4 = types.InlineKeyboardButton("Завершить заказ",
                                              callback_data=f"completingActive#{order.id}")
 
-        button5 = types.InlineKeyboardButton("Назад", callback_data="activeList")
+        button5 = types.InlineKeyboardButton("Назад ⬅️", callback_data="activeList")
 
         activeMenu.add(button1)
 
@@ -1168,7 +1166,7 @@ def adminActiveInfoMenu(activeOrders: list, choosedOrder: int, language):
         button4 = types.InlineKeyboardButton("Complete order",
                                              callback_data=f"completingActive#{order.id}")
 
-        button5 = types.InlineKeyboardButton("Back", callback_data="activeList")
+        button5 = types.InlineKeyboardButton("Back ⬅️", callback_data="activeList")
 
         activeMenu.add(button1)
 
@@ -1191,9 +1189,9 @@ def switchActiveToCompleteText(id: int, language):
 
 def switchActiveToCompleteMenu(language):
     if language == "RU":
-        return types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("Назад", callback_data="activeList"))
+        return types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("Назад ⬅️", callback_data="activeList"))
     if language == "EN":
-        return types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("Back", callback_data="activeList"))
+        return types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("Back ⬅️", callback_data="activeList"))
 def switchActiveToRefusalText(languageAdmin, languageCustomer):
     if languageAdmin == "RU":
         return f"Введите причину отмены или вернитесь назад!\nРекомендуется использовать язык: {languageCustomer}"
@@ -1201,9 +1199,9 @@ def switchActiveToRefusalText(languageAdmin, languageCustomer):
         return f"Enter a reason for canceling or go back!\nRecommended to use the language: {languageCustomer}"
 def switchActiveToRefusalMenu(page: int, language):
     if language == "RU":
-        return types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("Назад", callback_data=f"activeToRefusalCancel#{page}"))
+        return types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("Назад ⬅️", callback_data=f"activeToRefusalCancel#{page}"))
     if language == "EN":
-        return types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("Back", callback_data=f"activeToRefusalCancel#{page}"))
+        return types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("Back ⬅️", callback_data=f"activeToRefusalCancel#{page}"))
 
 def infoActiveToRefusalText(id: int, language):
     if language == "RU":
@@ -1213,9 +1211,9 @@ def infoActiveToRefusalText(id: int, language):
 
 def infoActiveToRefusalMenu(language):
     if language == "RU":
-        return types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("Назад", callback_data="activeList"))
+        return types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("Назад ⬅️", callback_data="activeList"))
     if language == "EN":
-        return types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("Back", callback_data="activeList"))
+        return types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("Back ⬅️", callback_data="activeList"))
 
 def toCommunicateWithCustomerText(id: int, language):
     if language == "RU":
@@ -1226,10 +1224,10 @@ def toCommunicateWithCustomerText(id: int, language):
                f"Recommended to use the language: {db.getLanguage(ao.getActiveOrder(id).customer_id)}"
 def toCommunicateWithCustomerMenu(page: int, language):
     if language == "RU":
-        return types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("Назад",
+        return types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("Назад ⬅️",
                                                                        callback_data=f"adminCommunicateCancel#{page}"))
     if language == "EN":
-        return types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("Back",
+        return types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("Back ⬅️",
                                                                        callback_data=f"adminCommunicateCancel#{page}"))
 
 def answerNextSendToCustomerText(idOrder: int, language):
@@ -1239,9 +1237,9 @@ def answerNextSendToCustomerText(idOrder: int, language):
         return f'Message to the buyer on order №{idOrder} successfully sent'
 def answerNextSendToCustomerMenu(page: int, language):
     if language == "RU":
-        return types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("Назад", callback_data=f"adminLookActive#{page}"))
+        return types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("Назад ⬅️", callback_data=f"adminLookActive#{page}"))
     if language == "EN":
-        return types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("Back", callback_data=f"adminLookActive#{page}"))
+        return types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("Back ⬅️", callback_data=f"adminLookActive#{page}"))
 
 def sendingToCustomerText(idOrder, text, language):
     if language == "RU":
@@ -1263,9 +1261,9 @@ def toAnswerToAdminText(language):
         return 'Write a message:'
 def toAnswerToAdminMenu(language):
     if language == "RU":
-        return types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("Отменить", callback_data="answerToAdminCancel"))
+        return types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("Отменить ❌", callback_data="answerToAdminCancel"))
     if language == "EN":
-        return types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("Cancel", callback_data="answerToAdminCancel"))
+        return types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("Cancel ❌", callback_data="answerToAdminCancel"))
 def feedbackToCustomerAfterSendAdminText(language):
     if language == "RU":
         return "Сообщение успешно отправлено"
@@ -1324,9 +1322,9 @@ def adminSliderOrderRefusal(page, refusal, language):
 
         toBackButton = ""
         if language == "RU":
-            toBackButton = types.InlineKeyboardButton('Назад', callback_data='adminOrders')
+            toBackButton = types.InlineKeyboardButton('Назад ⬅️', callback_data='adminOrders')
         if language == "EN":
-            toBackButton = types.InlineKeyboardButton('Back', callback_data='adminOrders')
+            toBackButton = types.InlineKeyboardButton('Back ⬅️', callback_data='adminOrders')
         paginator.add_after(toBackButton)
 
         return paginator.markup
@@ -1335,10 +1333,10 @@ def adminSliderOrderRefusal(page, refusal, language):
         backingMenu = types.InlineKeyboardMarkup(row_width=1)
 
         if language == "RU":
-            backingButton = types.InlineKeyboardButton("Назад", callback_data="adminOrders")
+            backingButton = types.InlineKeyboardButton("Назад ⬅️", callback_data="adminOrders")
             return backingMenu.add(backingButton)
         if language == "EN":
-            backingButton = types.InlineKeyboardButton("Back", callback_data="adminOrders")
+            backingButton = types.InlineKeyboardButton("Back ⬅️", callback_data="adminOrders")
             return backingMenu.add(backingButton)
 
 
@@ -1402,10 +1400,10 @@ def adminRefusalInfoText(refusalOrders: list, choosedOrder: int, language):
 def adminRefusalInfoMenu(language):
     if language == "RU":
         return types.InlineKeyboardMarkup(row_width=1).add(
-            types.InlineKeyboardButton("Назад", callback_data="refusalList"))
+            types.InlineKeyboardButton("Назад ⬅️", callback_data="refusalList"))
     if language == "EN":
         return types.InlineKeyboardMarkup(row_width=1).add(
-            types.InlineKeyboardButton("Back", callback_data="refusalList"))
+            types.InlineKeyboardButton("Back ⬅️", callback_data="refusalList"))
 
 def AdminTextOrderComplete(complete: list, language):
     if len(complete) != 0:
@@ -1776,14 +1774,14 @@ def adminAddProductMediaMenu(language):
         return types.InlineKeyboardMarkup(row_width=1).add(
             types.InlineKeyboardButton("Видео", callback_data=f"attachVideoToProduct"),
             types.InlineKeyboardButton("Фото", callback_data=f"attachPhotoToProduct"),
-            types.InlineKeyboardButton("Несколько медиа", callback_data=f"attachMediaGroupToProduct"),
+            # types.InlineKeyboardButton("Несколько медиа", callback_data=f"attachMediaGroupToProduct"),
             types.InlineKeyboardButton("Сбросить", callback_data="resetProduct")
         )
     if language == "EN":
         return types.InlineKeyboardMarkup(row_width=1).add(
             types.InlineKeyboardButton("Video", callback_data=f"attachVideoToProduct"),
             types.InlineKeyboardButton("Photo", callback_data=f"attachPhotoToProduct"),
-            types.InlineKeyboardButton("Media group", callback_data=f"attachMediaGroupToProduct"),
+            # types.InlineKeyboardButton("Media group", callback_data=f"attachMediaGroupToProduct"),
             types.InlineKeyboardButton("Reset", callback_data="resetProduct")
         )
 def adminFinalProductMenu(language):
@@ -1831,42 +1829,44 @@ def adminSwitcherLanguageMenu():
     return switchLanguageProfile.add(languageProfileEN, languageProfileRU)
 
 
-def adminTextMediaGroupToProduct(language):
-    if language == "RU":
-        return "ПО ОДНОМУ отправляйте фото/видео в формате png,jpg/mp4 (от 2 до 10 в сумме)"
-    if language == "EN":
-        return "Send photos/videos in png,jpg/mp4 format ONE BY ONE (from 2 to 10 in total)"
-
-def adminMenuMediaGroupToProduct(language):
-    if language == "RU":
-        return types.InlineKeyboardMarkup(row_width=1).add(
-            types.InlineKeyboardButton("Сбросить", callback_data="resetProduct")
-        )
-    if language == "EN":
-        return types.InlineKeyboardMarkup(row_width=1).add(
-            types.InlineKeyboardButton("Reset", callback_data="resetProduct")
-        )
-
-def videoHadUploaded(language):
-    if language == "RU":
-        return 'Видео было добавлено'
-    if language == "EN":
-        return 'Video has uploaded'
-
-def photoHasUploaded(language):
-    if language == "RU":
-        return 'Фото было добавлено'
-    if language == "EN":
-        return 'Photo has uploaded'
-
-def askToAddMoreMediaMenu(countMedia, language):
-    if language == "RU":
-        menu = types.InlineKeyboardMarkup(row_width=1)
-        if countMedia < 10:
-            menu.add(types.InlineKeyboardButton("Добавить еще", callback_data="addMoreMedia"))
-        if countMedia >= 2:
-            menu.add(types.InlineKeyboardButton("Завершить прикрепление", callback_data="finishAttachment"))
-        menu.add(types.InlineKeyboardButton)
-        return types.InlineKeyboardMarkup(row_width=1).add(
-
-        )
+# def adminTextMediaGroupToProduct(language):
+#     if language == "RU":
+#         return "ПО ОДНОМУ отправляйте фото/видео в формате png,jpg/mp4 (от 2 до 10 в сумме)"
+#     if language == "EN":
+#         return "Send photos/videos in png,jpg/mp4 format ONE BY ONE (from 2 to 10 in total)"
+#
+# def adminMenuMediaGroupToProduct(language):
+#     if language == "RU":
+#         return types.InlineKeyboardMarkup(row_width=1).add(
+#             types.InlineKeyboardButton("Сбросить", callback_data="resetProduct")
+#         )
+#     if language == "EN":
+#         return types.InlineKeyboardMarkup(row_width=1).add(
+#             types.InlineKeyboardButton("Reset", callback_data="resetProduct")
+#         )
+#
+# def videoHadUploaded(countMedia, language):
+#     if language == "RU":
+#         return f'Видео было добавлено\nДобавлено {countMedia} из 10 возможных вложений'
+#     if language == "EN":
+#         return f'Video has uploaded\nAdded {countMedia} out of 10 possible attachments'
+#
+# def photoHasUploaded(countMedia, language):
+#     if language == "RU":
+#         return f'Фото было добавлено\nДобавлено {countMedia} из 10 возможных вложений'
+#     if language == "EN":
+#         return f'Photo has uploaded\nAdded {countMedia} out of 10 possible attachments'
+#
+# def askToAddMoreMediaMenu(countMedia, language):
+#     if language == "RU":
+#         menu = types.InlineKeyboardMarkup(row_width=1)
+#         if countMedia >= 2:
+#             menu.add(types.InlineKeyboardButton("Завершить прикрепление", callback_data="finishAttachment"))
+#         menu.add(types.InlineKeyboardButton("Сбросить", callback_data="resetProduct"))
+#         return menu
+#     if language == "EN":
+#         menu = types.InlineKeyboardMarkup(row_width=1)
+#         if countMedia >= 2:
+#             menu.add(types.InlineKeyboardButton("Finish attaching", callback_data="finishAttachment"))
+#         menu.add(types.InlineKeyboardButton("Reset", callback_data="resetProduct"))
+#         return menu

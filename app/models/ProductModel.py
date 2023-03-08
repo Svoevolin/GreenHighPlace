@@ -106,6 +106,7 @@ def getMedia(id):
         with app.app_context():
             if Product.query.filter_by(id=id).first():
                 customer = Product.query.filter_by(id=id).first()
+                # print(customer.dirMedia)
                 return customer.dirMedia
             else:
                 return {"message": 'No user with this chatId', "status": False}
@@ -187,6 +188,18 @@ def getProducts():
             return finalList
     except Exception as e:
         return print(e, "\ngetProduct error")
+
+def countMedia(id):
+    try:
+        with app.app_context():
+            if Product.query.filter_by(id=id).first():
+                newprod = Product.query.filter_by(id=id).first()
+                return len(list(newprod.dirMedia.split('#'))) // 2
+            else:
+                return Exception
+
+    except Exception as e:
+        return print(e, "\nsetDirMedia error")
 
 def delProduct(id: int):
     try:

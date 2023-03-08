@@ -4,7 +4,7 @@ from app.models import CartModel as cart
 from datetime import datetime
 from app.models import ProductModel as pm
 from app.models import ActiveOrderModel as ao
-
+import pytz
 # from CustomerModel import Customer
 # import os,sys
 # sys.path.insert(1, os.path.join(sys.path[0], '../'))
@@ -65,8 +65,8 @@ def switcherActiveToRefusal(active: ao.ActiveOrder, reason: str):
                 fullprice=active.fullprice,
                 datetime=active.datetime,
                 methodpay=active.methodpay,
-                datetime_refuse=str(datetime.now().strftime("%d/%m/%Y %H:%M")),
-                reason = reason,
+                datetime_refuse=str(datetime.now(pytz.timezone('Asia/Bangkok')).strftime("%d/%m/%Y %H:%M")),
+                reason=reason,
                 address=active.address,
                 comment=active.comment,
                 id_from_active=active.id
