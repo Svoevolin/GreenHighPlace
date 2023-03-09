@@ -18,6 +18,7 @@ psycopg2-binary==2.9.5
 pyTelegramBotAPI==4.10.0
 python-dotenv==1.0.0
 python-telegram-bot-pagination==0.0.2
+pytz==2022.7.1
 PyYAML==6.0
 redis==4.5.1
 requests==2.28.2
@@ -25,4 +26,3 @@ SQLAlchemy==2.0.4
 typing_extensions==4.5.0
 urllib3==1.26.14
 Werkzeug==2.2.3
-yandex-geocoder==3.0.1
