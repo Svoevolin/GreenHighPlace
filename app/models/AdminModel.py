@@ -43,3 +43,12 @@ def checkAdmin(chatId: int):
     except Exception as e:
         return print(e, "\ncheckAdmin error")
 
+def delAdmin(chatId: int):
+    try:
+        with app.app_context():
+            admin = Admin.query.filter_by(chatId=chatId).first()
+            db.session.delete(admin)
+            db.session.commit()
+    except Exception as e:
+        return print(e, "\ndelAdmin error")
+

@@ -140,7 +140,9 @@ def stepByGetAddress(message):
 
 @bot.callback_query_handler(func=lambda call: True)
 def language(call):
+    print(call.data)
     try:
+
         if call.data == "EN" or call.data == "RU":
             db.setLanguage(chatId=call.message.chat.id, language=call.data)
 
@@ -1129,6 +1131,20 @@ def language(call):
 
             bot.register_next_step_handler(msg, toNewProdPrice)
 
+        if call.data == "exitAdmin":
+            am.delAdmin(call.message.chat.id)
+            bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
+
+            bot.send_message(chat_id=call.message.chat.id,
+                             text=mk.exitAdminText(db.getLanguage(call.message.chat.id)),
+                             reply_markup=mk.menuBuyProfile(db.getLanguage(chatId=call.message.chat.id)))
+
+            bot.send_message(chat_id=call.message.chat.id,
+                             text=mk.getInfoProfile(language=db.getLanguage(call.message.chat.id),
+                                                    address=db.getAddress(call.message.chat.id),
+                                                    comment=db.getComment(call.message.chat.id)),
+                             reply_markup=mk.profileMenu(db.getLanguage(call.message.chat.id)),
+                             parse_mode='MARKDOWN')
     except Exception as e:
         pass
 def toWritePriceChangingProduct(message, idProduct):
@@ -1554,23 +1570,37 @@ def handler_file(message):
 
 @bot.message_handler(content_types=['location'])
 def getLocation(message):
-    try:
+    # try:
         print(message.location.latitude, message.location.longitude)
-        db.setAddress(chatId=message.chat.id, location=get_address(lat=message.location.latitude,
-                                                                   lon=message.location.longitude,
-                                                                   language=db.getLanguage(message.chat.id)))
-        db.setComment(chatId=message.chat.id, comment=None)
-        msg = bot.send_message(chat_id=message.chat.id,
-                               text=mk.addressInfo(db.getLanguage(chatId=message.chat.id),
-                                                   db.getAddress(chatId=message.chat.id))
-                                    + "\n\n" + mk.toCommentAddress(db.getLanguage(chatId=message.chat.id)),
-                               reply_markup=mk.toCommentAdress(db.getLanguage(chatId=message.chat.id)),
-                               parse_mode='MARKDOWN')
 
-        bot.register_next_step_handler(msg, stepByGetAddress)
+        addr = get_address(lat=message.location.latitude,lon=message.location.longitude, language=db.getLanguage(message.chat.id))
 
-    except Exception as e:
-        pass
+        if addr is not None:
+
+            db.setAddress(chatId=message.chat.id, location=addr)
+            db.setComment(chatId=message.chat.id, comment=None)
+            msg = bot.send_message(chat_id=message.chat.id,
+                                   text=mk.addressInfo(db.getLanguage(chatId=message.chat.id),
+                                                       db.getAddress(chatId=message.chat.id))
+                                        + "\n\n" + mk.toCommentAddress(db.getLanguage(chatId=message.chat.id)),
+                                   reply_markup=mk.toCommentAdress(db.getLanguage(chatId=message.chat.id)),
+                                   parse_mode='MARKDOWN')
+
+            bot.register_next_step_handler(msg, stepByGetAddress)
+
+        else:
+            bot.send_message(chat_id=message.chat.id,
+                                   text=mk.errorAddressText(db.getLanguage(message.chat.id)))
+
+            bot.send_message(chat_id=message.chat.id,
+                                  text=mk.getInfoProfile(language=db.getLanguage(message.chat.id),
+                                                         address=db.getAddress(message.chat.id),
+                                                         comment=db.getComment(message.chat.id)),
+                                  reply_markup=mk.profileMenu(db.getLanguage(message.chat.id)),
+                                  parse_mode='MARKDOWN')
+
+    # except Exception as e:
+    #     pass
 
 
 if __name__ == '__main__':

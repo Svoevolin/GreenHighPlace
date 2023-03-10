@@ -986,14 +986,16 @@ def helloMenu(language):
         postSale = types.InlineKeyboardButton("Пост-акция", callback_data="adminPostSale")
         catalog = types.InlineKeyboardButton("Каталог товаров", callback_data="adminCatalog")
         lang = types.InlineKeyboardButton("Сменить язык", callback_data="adminSwitchLanguage")
-        return bossMenu.add(orders, postSale, catalog, lang)
+        exitAdmin = types.InlineKeyboardButton("Выйти из админ панели", callback_data="exitAdmin")
+        return bossMenu.add(orders, postSale, catalog, lang, exitAdmin)
 
     if language =="EN":
         orders = types.InlineKeyboardButton("Orders", callback_data="adminOrders")
         postSale = types.InlineKeyboardButton("Post news", callback_data="adminPostSale")
         catalog = types.InlineKeyboardButton("Catalog", callback_data="adminCatalog")
         lang = types.InlineKeyboardButton("Switch language", callback_data="adminSwitchLanguage")
-        return bossMenu.add(orders, postSale, catalog, lang)
+        exitAdmin = types.InlineKeyboardButton("Exit admin", callback_data="exitAdmin")
+        return bossMenu.add(orders, postSale, catalog, lang, exitAdmin)
 def mainAdmin(language):
     adminMainMenu = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
     if language == "RU":
@@ -1942,3 +1944,15 @@ def wrongDigitPriceMenu(language):
             types.InlineKeyboardButton("Try again", callback_data=f"adminWrongDigitPrice"),
             types.InlineKeyboardButton("Reset", callback_data=f"resetProduct")
         )
+
+def errorAddressText(language):
+    if language == "RU":
+        return 'Ошибка поиска адреса\nПопробуйте снова или воспользуйтесь другим способом указания адреса'
+    if language == "EN":
+        return 'Error for search the address\nTry again or use another method of pointing address'
+
+def exitAdminText(language):
+    if language == "RU":
+        return 'Теперь ты покупатель'
+    if language == "EN":
+        return 'You are customer now'
