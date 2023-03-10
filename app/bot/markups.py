@@ -49,9 +49,9 @@ def askLocation(language: str):
 sendLocationRU = types.KeyboardButton("Отправить геолокацию 📍", request_location=True)
 writeLocationRU = types.KeyboardButton("Написать адрес текстом 🏘")
 passLocationRU = types.KeyboardButton("Пропустить сейчас ➡️")
-sendLocationEN = types.KeyboardButton("Send location", request_location=True)
-writeLocationEN = types.KeyboardButton("Write the address in text")
-passLocationEN = types.KeyboardButton("Pass now")
+sendLocationEN = types.KeyboardButton("Send location 📍", request_location=True)
+writeLocationEN = types.KeyboardButton("Write the address in text 🏘")
+passLocationEN = types.KeyboardButton("Pass now ➡")
 
 
 def menuLocation(language: str):
