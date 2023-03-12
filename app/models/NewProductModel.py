@@ -40,7 +40,7 @@ def setName(chatId, name):
     except Exception as e:
         return print(e, "\nsetName error")
 
-def setInfoAbout(chatId, infoAbout):
+def setInfoAboutRU(chatId, infoAbout):
     try:
         with app.app_context():
             if Productnew.query.filter_by(chatId=chatId).first():
@@ -52,7 +52,21 @@ def setInfoAbout(chatId, infoAbout):
                 return 0
 
     except Exception as e:
-        return print(e, "\nsetInfoAbout error")
+        return print(e, "\nsetInfoAboutRU error")
+
+def setInfoAboutEN(chatId, infoAbout):
+    try:
+        with app.app_context():
+            if Productnew.query.filter_by(chatId=chatId).first():
+                newprod = Productnew.query.filter_by(chatId=chatId).first()
+                newprod.infoAbout = newprod.infoAbout + "#" + infoAbout
+                db.session.commit()
+                return 1
+            else:
+                return 0
+
+    except Exception as e:
+        return print(e, "\nsetInfoAboutEN error")
 
 def setPrice(chatId, price):
     try:

@@ -269,14 +269,16 @@ class sliderProductPaginator(InlineKeyboardPaginator):
 def textProduct(name, infoAbout, price, language):
     if language == "RU":
         return f'''{name}
-{infoAbout}
+        
+{infoAbout.split("#")[0]}
 
 Доставка по всему острову
 1 грамм - {price} BATH'''
 
     elif language == "EN":
         return f'''{name}
-{infoAbout}
+        
+{infoAbout.split('#')[1]}
 
 Delivery on the whole Island
 1 gram - {price} BATH'''
@@ -741,7 +743,12 @@ def showActiveOrderText(activeOrders: list, choosedOrder: int, language: str):
         head += f"\n\n*Адрес для заказа:* {order.split('-#-#-')[7]}"
         head += f"\n\n*Комментарий к адресу:* " \
                 f"{order.split('-#-#-')[8] if order.split('-#-#-')[8] != 'None' else 'не указан'}"
-        head += f"\n\n*Статус заказа:* {order.split('-#-#-')[6]}"
+        if order.split('-#-#-')[6].split("#")[0] == "Передано на доставку":
+            head += f"\n\n*Статус заказа:* {order.split('-#-#-')[6].split('#')[0]}"
+            if order.split('-#-#-')[6].split('#')[1] != "":
+                head += f"\n*Ориентировочное время доставки:*\n{order.split('-#-#-')[6].split('#')[1]}"
+        else:
+            head += f"\n\n*Статус заказа:* {order.split('-#-#-')[6]}"
         return head
 
     if language == "EN":
@@ -761,7 +768,13 @@ def showActiveOrderText(activeOrders: list, choosedOrder: int, language: str):
         head += f"\n\n*Address for order:* {order.split('-#-#-')[7]}"
         head += f"\n\n*Comment for address:* " \
                 f"{order.split('-#-#-')[8] if order.split('-#-#-')[8] != 'None' else 'did not point'}"
-        head += f"\n\n*Status order:* {'waiting for courier' if order.split('-#-#-')[6] == 'ожидает курьера' else 'sent for delivety'}"
+        if order.split('-#-#-')[6].split("#")[0] == "Передано на доставку":
+            head += f"\n\n*Status order:* sent for delivery"
+            if order.split('-#-#-')[6].split('#')[1] != "":
+                head += f"\n*Estimated delivery time:*\n{order.split('-#-#-')[6].split('#')[1]}"
+        else:
+            head += f"\n\n*Status order:* waiting for courier"
+        # head += f"\n\n*Status order:* {'waiting for courier' if order.split('-#-#-')[6] == 'ожидает курьера' else 'sent for delivety'}"
         return head
 
 
@@ -1107,7 +1120,12 @@ def adminActiveInfoText(activeOrders: list, choosedOrder: int, language):
         head += f"\n\nАдрес для заказа: {order.address}"
         head += f"\n\nКомментарий к адресу: " \
                 f"{order.comment if order.comment is not None else 'не указан'}"
-        head += f"\n\nСтатус заказа: {order.status}"
+        if order.status.split('#')[0] == "Передано на доставку":
+            head += f"\n\nСтатус заказа: {order.status.split('#')[0]}"
+            if order.status.split('#')[1] != "":
+                head += f"\nОриентировное время доставки:\n{order.status.split('#')[1]}"
+        else:
+            head += f"\n\nСтатус заказа: {order.status}"
         return head
     if language == "EN":
         head = f"Order №{order.id}\n\n"
@@ -1131,7 +1149,12 @@ def adminActiveInfoText(activeOrders: list, choosedOrder: int, language):
         head += f"\n\nAddress for delivery: {order.address}"
         head += f"\n\nComment for address: " \
                 f'{order.comment if order.comment is not None else "did not point"}'
-        head += f"\n\nStatus order: {'waiting for courier' if order.status == 'ожидает курьера' else 'sent for delivety'}"
+        if order.status.split('#')[0] == "Передано на доставку":
+            head += f"\n\nStatus order: sent for delivery"
+            if order.status.split('#')[1] != "":
+                head += f"\nEstimated delivery time:\n{order.status.split('#')[1]}"
+        else:
+            head += "\n\nStatus order: waiting for courier"
         return head
 
 def adminActiveInfoMenu(activeOrders: list, choosedOrder: int, language):
@@ -1537,6 +1560,14 @@ def infoAccept(idOrder, language):
     elif language == "EN":
         return f'Order №{idOrder} was sent for delivery'
 
+def infoAcceptWithTime(order, language):
+    print(order.status)
+    if language == "RU":
+        return f'Заказ №{order.id} принят в доставку\nОриентировочное время доставки: {order.status.split("#")[1]}'
+
+    elif language == "EN":
+        return f'Order №{order.id} was sent for delivery\nEstimated delivery time: {order.status.split("#")[1]}'
+
 def adminBeforePostTextRU(language):
     if language == "RU":
         return "Введите текст поста на русском языке (до 450 символов):"
@@ -1554,6 +1585,12 @@ def warningPostText(language, length):
         return f"Максимальная длина сообщения 450 символов: вы ввели {length}"
     if language == "EN":
         return f"Maximum message length is 450 characters: you entered {length}"
+
+def warningProductText(language, length):
+    if language == "RU":
+        return f"Максимальная длина сообщения 400 символов: вы ввели {length}"
+    if language == "EN":
+        return f"Maximum message length is 400 characters: you entered {length}"
 
 def warningPostMenuRU(language):
     if language == "RU":
@@ -1687,30 +1724,40 @@ def adminSliderShop(page, products, language):
 def adminTextProduct(product, language):
     if language == "RU":
         return f'''ВЗГЛЯДОМ RU ПОЛЬЗОВАТЕЛЯ:\n
+        
 {product.name}
-{product.infoAbout}
+
+{product.infoAbout.split('#')[0]}
 
 Доставка по всему острову
 1 грамм - {product.price} BATH
 
 
 ВЗГЛЯДОМ EN ПОЛЬЗОВАТЕЛЯ:\n
-[то же название и описание]
+
+{product.name}
+
+{product.infoAbout.split('#')[1]}
 
 Delivery on the whole Island
 1 gram - {product.price} BATH'''
 
     if language == "EN":
-        return f'''RU USER'S VIEW:\n
+        return f'''RU USER'S VIEW:\
+        
 {product.name}
-{product.infoAbout}
+
+{product.infoAbout.split('#')[0]}
 
 Доставка по всему острову
 1 грамм - {product.price} BATH
 
 
 EN USER'S VIEW:\n
-[the same name and description]
+
+{product.name}
+
+{product.infoAbout.split('#')[1]}
 
 Delivery on the whole Island
 1 gram - {product.price} BATH'''
@@ -1719,18 +1766,41 @@ def adminProductMenu(idOrder, language):
     if language == "RU":
         return types.InlineKeyboardMarkup(row_width=1).add(
             types.InlineKeyboardButton("Изменить название", callback_data=f"adminChangeName#{idOrder}"),
-            types.InlineKeyboardButton("Изменить описание", callback_data=f"adminChangeInfoAbout#{idOrder}"),
+            types.InlineKeyboardButton("Изменить RU описание", callback_data=f"adminChangeInfoAboutRU#{idOrder}"),
+            types.InlineKeyboardButton("Изменить EN описание", callback_data=f"adminChangeInfoAboutEN#{idOrder}"),
             types.InlineKeyboardButton("Изменить цену", callback_data=f"adminChangePrice#{idOrder}"),
+            types.InlineKeyboardButton("Изменить медиа", callback_data=f"adminChangeMedia#{idOrder}"),
             types.InlineKeyboardButton("Удалить товар", callback_data=f"adminDeleteProduct#{idOrder}"),
             types.InlineKeyboardButton("Назад", callback_data="adminCatalogFromMedia")
         )
     if language == "EN":
         return types.InlineKeyboardMarkup(row_width=1).add(
             types.InlineKeyboardButton("Change name", callback_data=f"adminChangeName#{idOrder}"),
-            types.InlineKeyboardButton("Change text", callback_data=f"adminChangeInfoAbout#{idOrder}"),
+            types.InlineKeyboardButton("Change RU text", callback_data=f"adminChangeInfoAboutRU#{idOrder}"),
+            types.InlineKeyboardButton("Change EN text", callback_data=f"adminChangeInfoAboutEN#{idOrder}"),
             types.InlineKeyboardButton("Change price", callback_data=f"adminChangePrice#{idOrder}"),
+            types.InlineKeyboardButton("Change media", callback_data=f"adminChangeMedia#{idOrder}"),
             types.InlineKeyboardButton("Delete item", callback_data=f"adminDeleteProduct#{idOrder}"),
             types.InlineKeyboardButton("Back", callback_data="adminCatalogFromMedia")
+        )
+
+def changeMediaText(language):
+    if language == "RU":
+        return "Выберите вложение"
+    if language == "EN":
+        return "Choose attachment"
+def changeMediaMenu(language, idProduct):
+    if language == "RU":
+        return types.InlineKeyboardMarkup(row_width=1).add(
+            types.InlineKeyboardButton("Фото", callback_data=f"changeMediaToPhoto#{idProduct}"),
+            types.InlineKeyboardButton("Видео", callback_data=f"changeMediaToVideo#{idProduct}"),
+            types.InlineKeyboardButton("Назад", callback_data=f"resetChanging#{idProduct}")
+        )
+    if language == "EN":
+        return types.InlineKeyboardMarkup(row_width=1).add(
+            types.InlineKeyboardButton("Photo", callback_data=f"changeMediaToPhoto#{idProduct}"),
+            types.InlineKeyboardButton("Video", callback_data=f"changeMediaToVideo#{idProduct}"),
+            types.InlineKeyboardButton("Back", callback_data=f"resetChanging#{idProduct}")
         )
 def delProductText(language):
     if language == "RU":
@@ -1748,11 +1818,17 @@ def adminAddProductNameMenu(language):
         return types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("Сбросить", callback_data="resetProduct"))
     if language == "EN":
         return types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("Reset", callback_data="resetProduct"))
-def adminAddProductText(language):
+def adminAddProductTextRU(language):
     if language == "RU":
-        return 'Введите описание товара:'
+        return 'Введите описание товара на русском (не более 400 символов):'
     if language == "EN":
-        return 'Enter product description'
+        return 'Enter product description in Russian (no more than 400 characters)'
+
+def adminAddProductTextEN(language):
+    if language == "RU":
+        return 'Введите описание товара на английском (не более 400 символов):'
+    if language == "EN":
+        return 'Enter product description in English (no more than 400 characters)'
 
 def adminAddProductPrice(language):
     if language == "RU":
@@ -1762,32 +1838,40 @@ def adminAddProductPrice(language):
 def adminAddProductMediaText(product, language):
     if language == "RU":
         return f'''ВЗГЛЯДОМ RU ПОЛЬЗОВАТЕЛЯ:\n
+        
 {product.name}
-{product.infoAbout}
+
+{product.infoAbout.split('#')[0]}
 
 Доставка по всему острову
 1 грамм - {product.price} BATH
 
 
 ВЗГЛЯДОМ EN ПОЛЬЗОВАТЕЛЯ:\n
-[то же название и описание]
+
+{product.name}
+
+{product.infoAbout.split('#')[1]}
 
 Delivery on the whole Island
 1 gram - {product.price} BATH
-
-
-Выберите тип вложения:'''
+'''
     if language == "EN":
         return f'''RU USER'S VIEW:\n
+        
 {product.name}
-{product.infoAbout}
+
+{product.infoAbout.split('#')[0]}
 
 Доставка по всему острову
 1 грамм - {product.price} BATH
 
 
 EN USER'S VIEW:\n
-[the same name and description]
+
+{product.name}
+
+{product.infoAbout.split('#')[1]}
 
 Delivery on the whole Island
 1 gram - {product.price} BATH
@@ -1904,27 +1988,76 @@ def warningOverflowCaption(language, lenght: int):
     if language == "EN":
         return f'The maximum number of characters is 1024\nWith this description, the product will have {lenght}'
 
-def warningOverflowCaptionMenu(language, idProduct):
+# def warningOverflowCaptionMenu(language, idProduct):
+#     if language == "RU":
+#         return types.InlineKeyboardMarkup(row_width=1).add(
+#             types.InlineKeyboardButton("Повторить попытку", callback_data=f"adminChangeInfoAbout#{idProduct}"),
+#             types.InlineKeyboardButton("Назад", callback_data=f"resetChanging#{idProduct}")
+#         )
+#     if language == "EN":
+#         return types.InlineKeyboardMarkup(row_width=1).add(
+#             types.InlineKeyboardButton("Try again", callback_data=f"adminChangeInfoAbout#{idProduct}"),
+#             types.InlineKeyboardButton("Back", callback_data=f"resetChanging#{idProduct}")
+#         )
+
+def warningOverflowCaptionMenuRU(language, idProduct):
     if language == "RU":
         return types.InlineKeyboardMarkup(row_width=1).add(
-            types.InlineKeyboardButton("Повторить попытку", callback_data=f"adminChangeInfoAbout#{idProduct}"),
+            types.InlineKeyboardButton("Повторить попытку", callback_data=f"adminChangeInfoAboutRU#{idProduct}"),
             types.InlineKeyboardButton("Назад", callback_data=f"resetChanging#{idProduct}")
         )
     if language == "EN":
         return types.InlineKeyboardMarkup(row_width=1).add(
-            types.InlineKeyboardButton("Try again", callback_data=f"adminChangeInfoAbout#{idProduct}"),
+            types.InlineKeyboardButton("Try again", callback_data=f"adminChangeInfoAboutRU#{idProduct}"),
             types.InlineKeyboardButton("Back", callback_data=f"resetChanging#{idProduct}")
         )
 
-def warningOverflowCaptionForItemMenu(language):
+def warningOverflowCaptionMenuEN(language, idProduct):
     if language == "RU":
         return types.InlineKeyboardMarkup(row_width=1).add(
-            types.InlineKeyboardButton("Повторить попытку", callback_data=f"adminOverflowDescriptionNewItem"),
+            types.InlineKeyboardButton("Повторить попытку", callback_data=f"adminChangeInfoAboutEN#{idProduct}"),
+            types.InlineKeyboardButton("Назад", callback_data=f"resetChanging#{idProduct}")
+        )
+    if language == "EN":
+        return types.InlineKeyboardMarkup(row_width=1).add(
+            types.InlineKeyboardButton("Try again", callback_data=f"adminChangeInfoAboutEN#{idProduct}"),
+            types.InlineKeyboardButton("Back", callback_data=f"resetChanging#{idProduct}")
+        )
+
+
+# def warningOverflowCaptionForItemMenu(language):
+#     if language == "RU":
+#         return types.InlineKeyboardMarkup(row_width=1).add(
+#             types.InlineKeyboardButton("Повторить попытку", callback_data=f"adminOverflowDescriptionNewItem"),
+#             types.InlineKeyboardButton("Сбросить", callback_data=f"resetProduct")
+#         )
+#     if language == "EN":
+#         return types.InlineKeyboardMarkup(row_width=1).add(
+#             types.InlineKeyboardButton("Try again", callback_data=f"adminOverflowDescriptionNewItem"),
+#             types.InlineKeyboardButton("Reset", callback_data=f"resetProduct")
+#         )
+
+def warningOverflowCaptionForProductMenu1(language):
+    if language == "RU":
+        return types.InlineKeyboardMarkup(row_width=1).add(
+            types.InlineKeyboardButton("Повторить попытку", callback_data=f"adminOverflowDescriptionNewProductRU"),
             types.InlineKeyboardButton("Сбросить", callback_data=f"resetProduct")
         )
     if language == "EN":
         return types.InlineKeyboardMarkup(row_width=1).add(
-            types.InlineKeyboardButton("Try again", callback_data=f"adminOverflowDescriptionNewItem"),
+            types.InlineKeyboardButton("Try again", callback_data=f"adminOverflowDescriptionNewProductRU"),
+            types.InlineKeyboardButton("Reset", callback_data=f"resetProduct")
+        )
+
+def warningOverflowCaptionForProductMenu2(language):
+    if language == "RU":
+        return types.InlineKeyboardMarkup(row_width=1).add(
+            types.InlineKeyboardButton("Повторить попытку", callback_data=f"adminOverflowDescriptionNewProductEN"),
+            types.InlineKeyboardButton("Сбросить", callback_data=f"resetProduct")
+        )
+    if language == "EN":
+        return types.InlineKeyboardMarkup(row_width=1).add(
+            types.InlineKeyboardButton("Try again", callback_data=f"adminOverflowDescriptionNewProductEN"),
             types.InlineKeyboardButton("Reset", callback_data=f"resetProduct")
         )
 
@@ -1956,3 +2089,19 @@ def exitAdminText(language):
         return 'Теперь ты покупатель'
     if language == "EN":
         return 'You are customer now'
+
+def enterEstimatedDeliveryTimeText(language):
+    if language == "RU":
+        return 'Введите ориентировочное время доставки\nНапример 19:00 или 16:00-17:30'
+    if language == "EN":
+        return "Enter estimated delivery time\nFor example 19:00 or 16:00-17:30"
+
+def enterEstimatedDeliveryTimeMenu(language, idOrder):
+    if language == "RU":
+        return types.InlineKeyboardMarkup(row_width=1).add(
+            types.InlineKeyboardButton("Пропустить", callback_data=f"skipEstimatedTime#{idOrder}")
+        )
+    if language == "EN":
+        return types.InlineKeyboardMarkup(row_width=1).add(
+            types.InlineKeyboardButton("Skip", callback_data=f"skipEstimatedTime#{idOrder}")
+        )

@@ -139,6 +139,34 @@ def setInfoAbout(id, info):
     except Exception as e:
         return print(e, "\nsetLanguage error")
 
+def changeInfoAboutRU(id, infoAbout):
+    try:
+        with app.app_context():
+            if Product.query.filter_by(id=id).first():
+                newprod = Product.query.filter_by(id=id).first()
+                newprod.infoAbout = infoAbout + "#" + newprod.infoAbout.split("#")[1]
+                db.session.commit()
+                return 1
+            else:
+                return 0
+
+    except Exception as e:
+        return print(e, "\nsetInfoAboutRU error")
+
+def changeInfoAboutEN(id, infoAbout):
+    try:
+        with app.app_context():
+            if Product.query.filter_by(id=id).first():
+                newprod = Product.query.filter_by(id=id).first()
+                newprod.infoAbout = newprod.infoAbout.split("#")[0] + "#" + infoAbout
+                db.session.commit()
+                return 1
+            else:
+                return 0
+
+    except Exception as e:
+        return print(e, "\nsetInfoAboutEN error")
+
 def getName(id):
     try:
         with app.app_context():
@@ -210,6 +238,19 @@ def delProduct(id: int):
     except Exception as e:
         return print(e, "\ndelProduct error")
 
+def setDirMedia(id, dirMedia):
+    try:
+        with app.app_context():
+            if Product.query.filter_by(id=id).first():
+                newprod = Product.query.filter_by(id=id).first()
+                newprod.dirMedia = dirMedia
+                db.session.commit()
+                return 1
+            else:
+                return 0
+
+    except Exception as e:
+        return print(e, "\nsetDirMedia error")
 
 def switcherNewProductToStartProduct(newprod: npm.Productnew):
     try:

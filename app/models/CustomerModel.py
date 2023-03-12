@@ -9,7 +9,7 @@ class Customer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     chatId = db.Column(db.BigInteger, nullable=False)
     language = db.Column(db.String(64), nullable=True)
-    username = db.Column(db.String(64), default="N/A")
+    username = db.Column(db.String(64), nullable=True)
     dateLogin = db.Column(db.String(64), default="N/A")
     refCode = db.Column(db.String(64), default="N/A")
     location = db.Column(db.String, nullable=True)

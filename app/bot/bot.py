@@ -25,7 +25,7 @@ config = load_dotenv()
 
 adminPostSaleChecker = dict()
 adminAddProductChecker = dict()
-
+adminChangeProductChecker = dict()
 def extractUniqueCode(text):
     return text.split()[1] if len(text.split()) > 1 else None
 
@@ -140,7 +140,7 @@ def stepByGetAddress(message):
 
 @bot.callback_query_handler(func=lambda call: True)
 def language(call):
-    print(call.data)
+
     try:
 
         if call.data == "EN" or call.data == "RU":
@@ -488,6 +488,46 @@ def language(call):
 
             idOrder = int(call.data.split('#')[1])
             idCustomer = ao.getActiveOrder(idOrder).customer_id
+
+            # bot.send_message(chat_id=idCustomer,
+            #                  text=mk.infoAccept(idOrder=idOrder,
+            #                                     language=db.getLanguage(idCustomer)))
+
+            # ao.switchStatus(idOrder)
+            # bot.answer_callback_query(callback_query_id=call.id,
+            #                           show_alert=True,
+            #                           text=mk.switchStatusText(db.getLanguage(call.message.chat.id)))
+
+            page = 0
+
+            for i in ao.getAllActiveOrders():
+                if ao.getActiveOrder(idOrder).id == i.id:
+                    break
+                page += 1
+
+            msg = bot.edit_message_text(chat_id=call.message.chat.id,
+                                        message_id=call.message.message_id,
+                                        text=mk.enterEstimatedDeliveryTimeText(db.getLanguage(call.message.chat.id)),
+                                        reply_markup=mk.enterEstimatedDeliveryTimeMenu(
+                                            db.getLanguage(call.message.chat.id),
+                                            idOrder)
+                                        )
+
+            bot.register_next_step_handler(msg, toEnterEstimatedTime, idOrder)
+
+            # bot.edit_message_text(chat_id=call.message.chat.id,
+            #                       message_id=call.message.message_id,
+            #                       text=mk.adminActiveInfoText(ao.getAllActiveOrders(),
+            #                                                   page,
+            #                                                   db.getLanguage(call.message.chat.id)),
+            #                       reply_markup=mk.adminActiveInfoMenu(ao.getAllActiveOrders(),
+            #                                                           page,
+            #                                                           db.getLanguage(call.message.chat.id)))
+
+        if call.data.split('#')[0] == 'skipEstimatedTime':
+            idOrder = int(call.data.split('#')[1])
+            idCustomer = ao.getActiveOrder(idOrder).customer_id
+
             bot.send_message(chat_id=idCustomer,
                              text=mk.infoAccept(idOrder=idOrder,
                                                 language=db.getLanguage(idCustomer)))
@@ -512,6 +552,7 @@ def language(call):
                                   reply_markup=mk.adminActiveInfoMenu(ao.getAllActiveOrders(),
                                                                       page,
                                                                       db.getLanguage(call.message.chat.id)))
+
 
         if call.data.split('#')[0] == 'completingActive':
             id = int(call.data.split('#')[1])
@@ -929,6 +970,29 @@ def language(call):
                                   text=mk.adminPostToAttachPhoto(db.getLanguage(call.message.chat.id)),
                                   reply_markup=mk.adminAddProductNameMenu(db.getLanguage(call.message.chat.id)))
 
+        if call.data.split('#')[0] == "adminChangeMedia":
+            idProduct = int(call.data.split('#')[1])
+            bot.send_message(chat_id=call.message.chat.id,
+                             text=mk.changeMediaText(db.getLanguage(call.message.chat.id)),
+                             reply_markup=mk.changeMediaMenu(db.getLanguage(call.message.chat.id), idProduct))
+
+        if call.data.split('#')[0] == "changeMediaToPhoto":
+            idProduct = int(call.data.split('#')[1])
+            adminChangeProductChecker[call.message.chat.id] = pm.getProduct(idProduct).typeMedia, idProduct
+            pm.setType(idProduct, "photo")
+            bot.edit_message_text(chat_id=call.message.chat.id,
+                                  message_id=call.message.message_id,
+                                  text=mk.adminPostToAttachPhoto(db.getLanguage(call.message.chat.id)),
+                                  reply_markup=mk.adminChangeMenu(idProduct, db.getLanguage(call.message.chat.id)))
+
+        if call.data.split('#')[0] == "changeMediaToVideo":
+            idProduct = int(call.data.split('#')[1])
+            adminChangeProductChecker[call.message.chat.id] = pm.getProduct(idProduct).typeMedia, idProduct
+            pm.setType(idProduct, "video")
+            bot.edit_message_text(chat_id=call.message.chat.id,
+                                  message_id=call.message.message_id,
+                                  text=mk.adminPostToAttachVideo(db.getLanguage(call.message.chat.id)),
+                                  reply_markup=mk.adminChangeMenu(idProduct, db.getLanguage(call.message.chat.id)))
 
         # if call.data == "attachMediaGroupToProduct":
         #     npm.setType(call.message.chat.id, "mediaGroup")
@@ -1032,14 +1096,32 @@ def language(call):
                                                                    db.getLanguage(call.message.chat.id)))
             bot.register_next_step_handler(msg, toWriteNameChangingProduct, idProduct)
 
-        if call.data.split('#')[0] == 'adminChangeInfoAbout':
+        # if call.data.split('#')[0] == 'adminChangeInfoAbout':
+        #     idProduct = int(call.data.split('#')[1])
+        #     bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
+        #     msg = bot.send_message(chat_id=call.message.chat.id,
+        #                            text=mk.adminAddProductTextRU(db.getLanguage(call.message.chat.id)),
+        #                            reply_markup=mk.adminChangeMenu(idProduct,
+        #                                                            db.getLanguage(call.message.chat.id)))
+        #     bot.register_next_step_handler(msg, toWriteInfoAboutChangingProduct, idProduct)
+
+        if call.data.split('#')[0] == 'adminChangeInfoAboutRU':
             idProduct = int(call.data.split('#')[1])
             bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
             msg = bot.send_message(chat_id=call.message.chat.id,
-                                   text=mk.adminAddProductText(db.getLanguage(call.message.chat.id)),
+                                   text=mk.adminAddProductTextRU(db.getLanguage(call.message.chat.id)),
                                    reply_markup=mk.adminChangeMenu(idProduct,
                                                                    db.getLanguage(call.message.chat.id)))
-            bot.register_next_step_handler(msg, toWriteInfoAboutChangingProduct, idProduct)
+            bot.register_next_step_handler(msg, toWriteInfoAboutChangingProductRU, idProduct)
+
+        if call.data.split('#')[0] == 'adminChangeInfoAboutEN':
+            idProduct = int(call.data.split('#')[1])
+            bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
+            msg = bot.send_message(chat_id=call.message.chat.id,
+                                   text=mk.adminAddProductTextEN(db.getLanguage(call.message.chat.id)),
+                                   reply_markup=mk.adminChangeMenu(idProduct,
+                                                                   db.getLanguage(call.message.chat.id)))
+            bot.register_next_step_handler(msg, toWriteInfoAboutChangingProductEN, idProduct)
 
         if call.data.split('#')[0] == 'adminChangePrice':
             idProduct = int(call.data.split('#')[1])
@@ -1051,7 +1133,16 @@ def language(call):
             bot.register_next_step_handler(msg, toWritePriceChangingProduct, idProduct)
 
         if call.data.split('#')[0] == 'resetChanging':
+            # print(adminChangeProductChecker)
             idProduct = int(call.data.split('#')[1])
+
+            lastType = adminChangeProductChecker.get(call.message.chat.id)
+
+            if lastType is not None:
+                if lastType[0] == "video" or lastType[0] == "photo":
+                    pm.setType(idProduct, lastType[0])
+                    del adminChangeProductChecker[call.message.chat.id]
+            # print(adminChangeProductChecker)
 
             bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
             bot.clear_step_handler_by_chat_id(call.message.chat.id)
@@ -1114,14 +1205,32 @@ def language(call):
                                        reply_markup=mk.adminBeforePostMenu(db.getLanguage(call.message.chat.id)))
 
                 bot.register_next_step_handler(msg, toPostAdminTextEN)
+        #
+        # if call.data == "adminOverflowDescriptionNewItem":
+        #     msg = bot.edit_message_text(chat_id=call.message.chat.id,
+        #                                 message_id=call.message.message_id,
+        #                                 text=mk.adminAddProductText(db.getLanguage(call.message.chat.id)),
+        #                                 reply_markup=mk.adminAddProductNameMenu(db.getLanguage(call.message.chat.id)))
+        #
+        #     bot.register_next_step_handler(msg, toNewProdText)
 
-        if call.data == "adminOverflowDescriptionNewItem":
+
+        if call.data == "adminOverflowDescriptionNewProductRU":
             msg = bot.edit_message_text(chat_id=call.message.chat.id,
                                         message_id=call.message.message_id,
-                                        text=mk.adminAddProductText(db.getLanguage(call.message.chat.id)),
+                                        text=mk.adminAddProductTextRU(db.getLanguage(call.message.chat.id)),
                                         reply_markup=mk.adminAddProductNameMenu(db.getLanguage(call.message.chat.id)))
 
-            bot.register_next_step_handler(msg, toNewProdText)
+            bot.register_next_step_handler(msg, toNewProdTextRU)
+
+
+        if call.data == "adminOverflowDescriptionNewProductEN":
+            msg = bot.edit_message_text(chat_id=call.message.chat.id,
+                                        message_id=call.message.message_id,
+                                        text=mk.adminAddProductTextEN(db.getLanguage(call.message.chat.id)),
+                                        reply_markup=mk.adminAddProductNameMenu(db.getLanguage(call.message.chat.id)))
+
+            bot.register_next_step_handler(msg, toNewProdTextEN)
 
         if call.data == "adminWrongDigitPrice":
             msg = bot.edit_message_text(chat_id=call.message.chat.id,
@@ -1147,6 +1256,40 @@ def language(call):
                              parse_mode='MARKDOWN')
     except Exception as e:
         pass
+
+def toEnterEstimatedTime(message, idOrder):
+    try:
+
+        idCustomer = ao.getActiveOrder(idOrder).customer_id
+
+
+        ao.switchStatus(idOrder, message.text)
+
+        order = ao.getActiveOrder(idOrder)
+
+        bot.send_message(chat_id=idCustomer,
+                         text=mk.infoAcceptWithTime(order=order,
+                                                    language=db.getLanguage(idCustomer)))
+
+
+
+        page = 0
+
+        for i in ao.getAllActiveOrders():
+            if ao.getActiveOrder(idOrder).id == i.id:
+                break
+            page += 1
+
+        bot.send_message(chat_id=message.chat.id,
+                         text=mk.adminActiveInfoText(ao.getAllActiveOrders(),
+                                                     page,
+                                                     db.getLanguage(message.chat.id)),
+                         reply_markup=mk.adminActiveInfoMenu(ao.getAllActiveOrders(),
+                                                             page,
+                                                             db.getLanguage(message.chat.id)))
+    except Exception as e:
+        pass
+
 def toWritePriceChangingProduct(message, idProduct):
     try:
         pm.setPrice(idProduct, message.text)
@@ -1172,21 +1315,21 @@ def toWritePriceChangingProduct(message, idProduct):
                                                             db.getLanguage(message.chat.id)))
     except Exception as e:
         pass
-def toWriteInfoAboutChangingProduct(message, idProduct):
+def toWriteInfoAboutChangingProductRU(message, idProduct):
     try:
-        oldDescription = pm.getInfoAbout(idProduct)
-        pm.setInfoAbout(idProduct, message.text)
-        product = pm.getProduct(idProduct)
-        caption = mk.adminTextProduct(product, db.getLanguage(message.chat.id))
-        lengthOfCaption = len(caption)
-        print(lengthOfCaption)
-        if lengthOfCaption <= 1024:
+        # oldDescription = pm.getInfoAbout(idProduct)
+
+        lengthOfCaption = len(message.text)
+
+        if lengthOfCaption <= 400:
+            pm.changeInfoAboutRU(idProduct, message.text)
+            product = pm.getProduct(idProduct)
 
             if product.typeMedia == "video":
 
                 bot.send_video(chat_id=message.chat.id,
                                video=open(product.dirMedia, 'rb'),
-                               caption=caption,
+                               caption=mk.adminTextProduct(product, db.getLanguage(message.chat.id)),
                                reply_markup=mk.adminProductMenu(idProduct,
                                                                 db.getLanguage(message.chat.id)))
 
@@ -1194,18 +1337,52 @@ def toWriteInfoAboutChangingProduct(message, idProduct):
 
                 bot.send_photo(chat_id=message.chat.id,
                                photo=open(product.dirMedia, 'rb'),
-                               caption=caption,
+                               caption=mk.adminTextProduct(product, db.getLanguage(message.chat.id)),
                                reply_markup=mk.adminProductMenu(idProduct,
                                                                 db.getLanguage(message.chat.id)))
         else:
-            pm.setInfoAbout(idProduct, oldDescription)
             bot.send_message(chat_id=message.chat.id,
-                             text=mk.warningOverflowCaption(db.getLanguage(message.chat.id), lengthOfCaption),
-                             reply_markup=mk.warningOverflowCaptionMenu(db.getLanguage(message.chat.id),
+                             text=mk.warningProductText(db.getLanguage(message.chat.id), lengthOfCaption),
+                             reply_markup=mk.warningOverflowCaptionMenuRU(db.getLanguage(message.chat.id),
                                                                         idProduct))
 
     except Exception as e:
         pass
+
+def toWriteInfoAboutChangingProductEN(message, idProduct):
+    try:
+        # oldDescription = pm.getInfoAbout(idProduct)
+
+
+        lengthOfCaption = len(message.text)
+
+        if lengthOfCaption <= 400:
+            pm.changeInfoAboutEN(idProduct, message.text)
+            product = pm.getProduct(idProduct)
+            if product.typeMedia == "video":
+
+                bot.send_video(chat_id=message.chat.id,
+                               video=open(product.dirMedia, 'rb'),
+                               caption=mk.adminTextProduct(product, db.getLanguage(message.chat.id)),
+                               reply_markup=mk.adminProductMenu(idProduct,
+                                                                db.getLanguage(message.chat.id)))
+
+            elif product.typeMedia == "photo":
+
+                bot.send_photo(chat_id=message.chat.id,
+                               photo=open(product.dirMedia, 'rb'),
+                               caption=mk.adminTextProduct(product, db.getLanguage(message.chat.id)),
+                               reply_markup=mk.adminProductMenu(idProduct,
+                                                                db.getLanguage(message.chat.id)))
+        else:
+            bot.send_message(chat_id=message.chat.id,
+                             text=mk.warningProductText(db.getLanguage(message.chat.id), lengthOfCaption),
+                             reply_markup=mk.warningOverflowCaptionMenuEN(db.getLanguage(message.chat.id),
+                                                                        idProduct))
+
+    except Exception as e:
+        pass
+
 def toWriteNameChangingProduct(message, idProduct):
     try:
         pm.setName(idProduct, message.text)
@@ -1237,29 +1414,52 @@ def toNewProdName(message):
         npm.setName(message.chat.id, message.text)
 
         msg = bot.send_message(chat_id=message.chat.id,
-                               text=mk.adminAddProductText(db.getLanguage(message.chat.id)),
+                               text=mk.adminAddProductTextRU(db.getLanguage(message.chat.id)),
                                reply_markup=mk.adminAddProductNameMenu(db.getLanguage(message.chat.id)))
 
-        bot.register_next_step_handler(msg, toNewProdText)
+        bot.register_next_step_handler(msg, toNewProdTextRU)
     except Exception as e:
         pass
 
-def toNewProdText(message):
+def toNewProdTextRU(message):
     try:
-        lengthMessage = len(message.text) + 250
-        if lengthMessage <= 1024:
+        lengthMessage = len(message.text)
+        if lengthMessage <= 400:
 
-            npm.setInfoAbout(message.chat.id, message.text)
+            npm.setInfoAboutRU(message.chat.id, message.text)
+
+            msg = bot.send_message(chat_id=message.chat.id,
+                                   text=mk.adminAddProductTextEN(db.getLanguage(message.chat.id)),
+                                   reply_markup=mk.adminAddProductNameMenu(db.getLanguage(message.chat.id)))
+
+            bot.register_next_step_handler(msg, toNewProdTextEN)
+
+
+        else:
+            bot.send_message(chat_id=message.chat.id,
+                             text=mk.warningProductText(db.getLanguage(message.chat.id), lengthMessage),
+                             reply_markup=mk.warningOverflowCaptionForProductMenu1(db.getLanguage(message.chat.id)))
+    except Exception as e:
+        pass
+
+def toNewProdTextEN(message):
+    try:
+        lengthMessage = len(message.text)
+
+        if lengthMessage <= 400:
+
+            npm.setInfoAboutEN(message.chat.id, message.text)
 
             msg = bot.send_message(chat_id=message.chat.id,
                                    text=mk.adminAddProductPrice(db.getLanguage(message.chat.id)),
                                    reply_markup=mk.adminAddProductNameMenu(db.getLanguage(message.chat.id)))
 
             bot.register_next_step_handler(msg, toNewProdPrice)
+
         else:
             bot.send_message(chat_id=message.chat.id,
-                             text=mk.warningOverflowCaption(db.getLanguage(message.chat.id), lengthMessage),
-                             reply_markup=mk.warningOverflowCaptionForItemMenu(db.getLanguage(message.chat.id)))
+                             text=mk.warningProductText(db.getLanguage(message.chat.id), lengthMessage),
+                             reply_markup=mk.warningOverflowCaptionForProductMenu2(db.getLanguage(message.chat.id)))
     except Exception as e:
         pass
 def toNewProdPrice(message):
@@ -1440,6 +1640,9 @@ def update_product_page(message, page, id):
 def handler_file(message):
     try:
         if am.checkAdmin(chatId=message.chat.id):
+            print(adminPostSaleChecker)
+            print(adminAddProductChecker)
+            print(adminChangeProductChecker)
 
             if adminPostSaleChecker.get(message.chat.id):
 
@@ -1526,6 +1729,60 @@ def handler_file(message):
                                                                        db.getLanguage(message.chat.id)),
                                    reply_markup=mk.adminFinalProductMenu(db.getLanguage(message.chat.id)),
                                    parse_mode='MARKDOWN')
+
+            elif adminChangeProductChecker.get(message.chat.id)[0] != False:
+                idProduct = adminChangeProductChecker[message.chat.id][1]
+                del adminChangeProductChecker[message.chat.id]
+                if message.content_type == "video" and pm.getProduct(idProduct).typeMedia == "video":
+                    os.remove(pm.getMedia(idProduct))
+
+                    file_info = bot.get_file(message.video.file_id)
+                    downloaded_file = bot.download_file(file_info.file_path)
+
+                    print(file_info.file_unique_id)
+
+                    src = f'{pathlib.Path.cwd()}/../files/{file_info.file_unique_id}.mp4'
+
+                    with open(src, 'wb') as new_file:
+                        new_file.write(downloaded_file)
+
+                    pm.setDirMedia(idProduct, src)
+
+                    product = pm.getProduct(idProduct)
+
+                    bot.send_video(chat_id=message.chat.id,
+                                   video=open(product.dirMedia, 'rb'),
+                                   caption=mk.adminTextProduct(product,
+                                                               db.getLanguage(message.chat.id)),
+                                   reply_markup=mk.adminProductMenu(idProduct,
+                                                                    db.getLanguage(message.chat.id)))
+
+            # elif adminChangeProductChecker.get(message.chat.id)[0] == "photo":
+                if message.content_type == "photo" and pm.getProduct(idProduct).typeMedia == "photo":
+                    os.remove(pm.getMedia(idProduct))
+
+                    file_info = bot.get_file(message.photo[len(message.photo) - 1].file_id)
+                    downloaded_file = bot.download_file(file_info.file_path)
+
+                    print(file_info.file_unique_id)
+
+                    src = f'{pathlib.Path.cwd()}/../files/{file_info.file_unique_id}.jpg'
+
+                    with open(src, 'wb') as new_file:
+                        new_file.write(downloaded_file)
+
+                    pm.setDirMedia(idProduct, src)
+
+                    product = pm.getProduct(idProduct)
+
+                    bot.send_photo(chat_id=message.chat.id,
+                                   photo=open(product.dirMedia, 'rb'),
+                                   caption=mk.adminTextProduct(product,
+                                                               db.getLanguage(message.chat.id)),
+                                   reply_markup=mk.adminProductMenu(idProduct,
+                                                                    db.getLanguage(message.chat.id)))
+
+
     except Exception as e:
         pass
 
@@ -1570,7 +1827,7 @@ def handler_file(message):
 
 @bot.message_handler(content_types=['location'])
 def getLocation(message):
-    # try:
+    try:
         print(message.location.latitude, message.location.longitude)
 
         addr = get_address(lat=message.location.latitude,lon=message.location.longitude, language=db.getLanguage(message.chat.id))
@@ -1599,8 +1856,8 @@ def getLocation(message):
                                   reply_markup=mk.profileMenu(db.getLanguage(message.chat.id)),
                                   parse_mode='MARKDOWN')
 
-    # except Exception as e:
-    #     pass
+    except Exception as e:
+        pass
 
 
 if __name__ == '__main__':

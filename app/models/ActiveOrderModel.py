@@ -73,11 +73,11 @@ def getActiveOrders(customer_id: int):
     except Exception as e:
         return print(e, "\ngetActiveOrders error")
 
-def switchStatus(id: int):
+def switchStatus(id: int, time=""):
     try:
         with app.app_context():
             active = ActiveOrder.query.filter_by(id=id).first()
-            active.status = "Передано на доставку"
+            active.status = "Передано на доставку" + "#" + time
             db.session.add(active)
             db.session.commit()
             return 1
