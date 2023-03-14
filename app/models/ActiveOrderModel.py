@@ -1,17 +1,8 @@
 from app.config import db, app
-from .CustomerModel import Customer
 from app.models import CartModel as cart
 from datetime import datetime
 from app.models import ProductModel as pm
 import pytz
-
-
-
-# from CustomerModel import Customer
-# import os,sys
-# sys.path.insert(1, os.path.join(sys.path[0], '../'))
-# from config import app, db
-
 
 class ActiveOrder(db.Model):
     __tablename__ = 'active'
@@ -83,7 +74,7 @@ def switchStatus(id: int, time=""):
             return 1
 
     except Exception as e:
-        return print(e, "\ngetActiveOrders error")
+        return print(e, "\nswitchStatus error")
 
 def getAllActiveOrders():
     try:
@@ -100,7 +91,7 @@ def getActiveOrder(id: int):
             return ActiveOrder.query.filter_by(id=id).first()
 
     except Exception as e:
-        return print(e, "\ngetActiveOrders error")
+        return print(e, "\ngetActiveOrder error")
 def delFromActive(id: int):
     try:
         with app.app_context():
@@ -108,68 +99,4 @@ def delFromActive(id: int):
             db.session.delete(active)
             db.session.commit()
     except Exception as e:
-        return print(e, "\ngetOfNumberOfProducts error")
-
-
-
-
-# def getCart(customer_id: int):
-#     try:
-#         with app.app_context():
-#
-#             return Cart.query.filter_by(customer_id=customer_id).all()
-#
-#     except Exception as e:
-#         return print(e, "\ngetOfNumberOfProducts error")
-#
-# def getOfNumberOfProducts(customer_id: int):
-#     try:
-#         with app.app_context():
-#
-#             return len(Cart.query.filter_by(customer_id=customer_id).all())
-#
-#     except Exception as e:
-#         return print(e, "\ngetOfNumberOfProducts error")
-#
-# def delProductsFromCart(customer_id: int):
-#     try:
-#         with app.app_context():
-#             products = Cart.query.filter_by(customer_id=customer_id).all()
-#             for product in products:
-#                 db.session.delete(product)
-#             db.session.commit()
-#     except Exception as e:
-#         return print(e, "\ngetOfNumberOfProducts error")
-
-# def getCustomers():
-#     try:
-#         with app.app_context():
-#             return Customer.query.filter(Customer.id != None).all()
-#
-#     except Exception as e:
-#         return print(e, "\ngetCustomers error")
-
-# def addToCart(customer: Customer, nameOfProduct: str, numOfProducts: int):
-#     try:
-#         with app.app_context():
-#
-#             print(customer)
-#             c = Cart(customer=customer,
-#                      nameOfProduct=nameOfProduct,
-#                      numOfProducts=numOfProducts)
-#             print(c)
-#             customer.cart.append(c)
-#             current_db_sessions = db.object_session(customer)
-#             current_db_sessions.add(customer)
-#             current_db_sessions.commit()
-#
-#             return 1
-#     except Exception as e:
-#         return print(e, "\naddToCart error")
-#
-# def getOfNumberOfProducts(customer: Customer):
-#     try:
-#         with app.app_context():
-#             return len(customer.cart)
-#     except Exception as e:
-#         return print(e, "\naddToCart error")
+        return print(e, "\ndelFromActive error")

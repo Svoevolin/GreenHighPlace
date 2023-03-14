@@ -1,7 +1,4 @@
 from app.config import db, app
-# import os,sys
-# sys.path.insert(1, os.path.join(sys.path[0], '../'))
-# from config import app, db
 
 class Customer(db.Model):
     __tablename__ = 'customer'
@@ -15,7 +12,6 @@ class Customer(db.Model):
     location = db.Column(db.String, nullable=True)
     comment = db.Column(db.String, nullable=True)
     contact = db.Column(db.String, nullable=True)
-    # cart = db.Column(db.PickleType)
 
     def __repr__(self):
         return '<Account %r>' % self.username
@@ -64,12 +60,12 @@ def setRef(chatId, refCode):
                 customer = Customer.query.filter_by(chatId=chatId).first()
                 customer.refCode = refCode
                 db.session.commit()
-                return {"message": f'Language set is{customer.language}', "status": True}
+                return {"message": f'Ref set is{customer.refCode}', "status": True}
             else:
                 return {"message": 'No user with this chatId', "status": False}
 
     except Exception as e:
-        return print(e, "\nsetLanguage error")
+        return print(e, "\nsetRef error")
 def getRef(chatId):
     try:
         with app.app_context():
@@ -80,7 +76,7 @@ def getRef(chatId):
                 return {"message": 'No user with this chatId', "status": False}
 
     except Exception as e:
-        return print(e, "\ngetLanguage error")
+        return print(e, "\ngetRef error")
 
 def setLanguage(chatId, language):
     try:
@@ -115,7 +111,7 @@ def setAddress(chatId, location):
                 customer = Customer.query.filter_by(chatId=chatId).first()
                 customer.location = location
                 db.session.commit()
-                return {"message": f'Location set is{customer.location}', "status": True}
+                return {"message": f'Address set is{customer.location}', "status": True}
             else:
                 return {"message": 'No user with this chatId', "status": False}
 
@@ -132,7 +128,7 @@ def getAddress(chatId):
                 return {"message": 'No user with this chatId', "status": False}
 
     except Exception as e:
-        return print(e, "\nsetAddress error")
+        return print(e, "\ngetAddress error")
 
 def setComment(chatId, comment):
     try:
@@ -141,12 +137,12 @@ def setComment(chatId, comment):
                 customer = Customer.query.filter_by(chatId=chatId).first()
                 customer.comment = comment
                 db.session.commit()
-                return {"message": f'Location set is{customer.location}', "status": True}
+                return {"message": f'Comment set is{customer.comment}', "status": True}
             else:
                 return {"message": 'No user with this chatId', "status": False}
 
     except Exception as e:
-        return print(e, "\nsetAddress error")
+        return print(e, "\nsetComment error")
 
 def getComment(chatId):
     try:
@@ -158,73 +154,4 @@ def getComment(chatId):
                 return {"message": 'No user with this chatId', "status": False}
 
     except Exception as e:
-        return print(e, "\nsetAddress error")
-
-# def setProduct(chatId, nameOfProduct, numOfProduct, priceOfProduct):
-#     try:
-#         with app.app_context():
-#             if Customer.query.filter_by(chatId=chatId).first():
-#                 customer = Customer.query.filter_by(chatId=chatId).first()
-#                 customer.cart[nameOfProduct] = numOfProduct
-#                 db.session.commit()
-#                 return {"message": f'Location set is{customer.location}', "status": True}
-#             else:
-#                 return {"message": 'No user with this chatId', "status": False}
-#
-#     except Exception as e:
-#         return print(e, "\nsetProduct error")
-#
-# def getCart(chatId):
-#     try:
-#         with app.app_context():
-#             if Customer.query.filter_by(chatId=chatId).first():
-#                 customer = Customer.query.filter_by(chatId=chatId).first()
-#                 return customer.cart
-#             else:
-#                 return {"message": 'No user with this chatId', "status": False}
-#
-#     except Exception as e:
-#         return print(e, "\nsetAddress error")
-#
-# def getOfNumberOfProducts(chatId):
-#     try:
-#         with app.app_context():
-#             if Customer.query.filter_by(chatId=chatId).first():
-#                 customer = Customer.query.filter_by(chatId=chatId).first()
-#                 return len(customer.cart)
-#             else:
-#                 return {"message": 'No user with this chatId', "status": False}
-#
-#     except Exception as e:
-#         return print(e, "\ngetOfNumberOfProducts error")
-# def setContact(chatId, contact):
-#     try:
-#         with app.app_context():
-#             if Customer.query.filter_by(chatId=chatId).first():
-#                 customer = Customer.query.filter_by(chatId=chatId).first()
-#                 customer.contact = contact
-#                 db.session.commit()
-#                 return {"message": f'Location set is{customer.location}', "status": True}
-#             else:
-#                 return {"message": 'No user with this chatId', "status": False}
-#
-#     except Exception as e:
-#         return print(e, "\nsetAddress error")
-#
-# def getContact(chatId):
-#     try:
-#         with app.app_context():
-#             if Customer.query.filter_by(chatId=chatId).first():
-#                 customer = Customer.query.filter_by(chatId=chatId).first()
-#                 return customer.contact
-#             else:
-#                 return {"message": 'No user with this chatId', "status": False}
-#
-#     except Exception as e:
-#         return print(e, "\nsetAddress error")
-
-
-
-
-
-
+        return print(e, "\ngetComment error")

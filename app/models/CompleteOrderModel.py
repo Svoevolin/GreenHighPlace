@@ -1,14 +1,8 @@
 from app.config import db, app
-from .CustomerModel import Customer
-from app.models import CartModel as cart
 from datetime import datetime
-from app.models import ProductModel as pm
 from app.models import ActiveOrderModel as ao
 import pytz
-# from CustomerModel import Customer
-# import os,sys
-# sys.path.insert(1, os.path.join(sys.path[0], '../'))
-# from config import app, db
+
 
 
 class CompleteOrder(db.Model):
@@ -37,7 +31,7 @@ def getAllCompleteOrders():
             return CompleteOrder.query.filter(CompleteOrder.id is not None).all()
 
     except Exception as e:
-        return print(e, "\ngetAllActiveOrders error")
+        return print(e, "\ngetAllCompleteOrders error")
 def getCompleteOrder(customer_id: int):
     try:
         with app.app_context():
@@ -78,36 +72,4 @@ def switcherActiveToComplete(active: ao.ActiveOrder):
 
     except Exception as e:
         return print(e, "\nswitcherActiveToComplete error")
-
-# def addActiveOrder(customer_id: int, fullprice: int, methodpay: str):
-#     try:
-#         with app.app_context():
-#             products = cart.getCart(customer_id=customer_id)
-#             items = ""
-#             for product in products:
-#                 product = str(product)
-#                 name = product.split('#')[0]
-#                 items += product + "#" + str(pm.getPrice(name)) + ","
-#
-#             dayandtime = str(datetime.now().strftime("%d/%m/%Y %H:%M"))
-#             if methodpay == "forCash":
-#
-#                 order = ActiveOrder(customer_id=customer_id,
-#                                     items=items,
-#                                     fullprice=fullprice,
-#                                     datetime=dayandtime,
-#                                     methodpay="наличные")
-#
-#                 # numberOfOrder = order.id
-#                 cart.delProductsFromCart(customer_id)
-#
-#                 db.session.add(order)
-#
-#                 db.session.commit()
-#                 c = ActiveOrder.query.filter(ActiveOrder.id is not None).all()
-#
-#                 return c[-1].id
-#     except Exception as e:
-#         return print(e, "\naddActiveOrder error")
-
 

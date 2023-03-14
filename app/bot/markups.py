@@ -152,13 +152,13 @@ def indexAddreessLater(language: str):
 # профиль
 profileMarkup = types.InlineKeyboardMarkup(row_width=1)
 profileButtonRU1 = types.InlineKeyboardButton("Изменить адрес 🏘", callback_data="changeAddress")
-profileButtonRU2 = types.InlineKeyboardButton("Мои заказы 🛍", callback_data="myOrders")
+profileButtonRU2 = types.InlineKeyboardButton("Мои заказы 💌", callback_data="myOrders")
 profileButtonRU3 = types.InlineKeyboardButton("Корзина 🛒", callback_data="bin")
 # profileButtonRU4 = types.InlineKeyboardButton("Реферальная система", callback_data="refSystem")
 profileButtonRU6 = types.InlineKeyboardButton("Изменить язык 🇷🇺🇺🇸", callback_data="changeLanguage")
 
 profileButtonEN1 = types.InlineKeyboardButton("Change address 🏘", callback_data="changeAddress")
-profileButtonEN2 = types.InlineKeyboardButton("My orders 🛍", callback_data="myOrders")
+profileButtonEN2 = types.InlineKeyboardButton("My orders 💌", callback_data="myOrders")
 profileButtonEN3 = types.InlineKeyboardButton("Cart 🛒", callback_data="bin")
 # profileButtonEN4 = types.InlineKeyboardButton("Ref system", callback_data="refSystem")
 profileButtonEN6 = types.InlineKeyboardButton("Change language 🇷🇺🇺🇸", callback_data="changeLanguage")
@@ -1588,9 +1588,9 @@ def warningPostText(language, length):
 
 def warningProductText(language, length):
     if language == "RU":
-        return f"Максимальная длина сообщения 400 символов: вы ввели {length}"
+        return f"Максимальная длина описания 900 символов: вы ввели {length}"
     if language == "EN":
-        return f"Maximum message length is 400 characters: you entered {length}"
+        return f"Maximum description length is 900 characters: you entered {length}"
 
 def warningPostMenuRU(language):
     if language == "RU":
@@ -1721,9 +1721,11 @@ def adminSliderShop(page, products, language):
                 types.InlineKeyboardButton("Back", callback_data="toMainAdmin")
             )
 
-def adminTextProduct(product, language):
+
+def adminTextProduct(product, language, pageOfLanguage):
     if language == "RU":
-        return f'''ВЗГЛЯДОМ RU ПОЛЬЗОВАТЕЛЯ:\n
+        if pageOfLanguage == 1:
+            return f'''ВЗГЛЯДОМ RU ПОЛЬЗОВАТЕЛЯ:\n
         
 {product.name}
 
@@ -1731,9 +1733,9 @@ def adminTextProduct(product, language):
 
 Доставка по всему острову
 1 грамм - {product.price} BATH
-
-
-ВЗГЛЯДОМ EN ПОЛЬЗОВАТЕЛЯ:\n
+'''
+        if pageOfLanguage == 2:
+            return f'''ВЗГЛЯДОМ EN ПОЛЬЗОВАТЕЛЯ:\n
 
 {product.name}
 
@@ -1743,7 +1745,8 @@ Delivery on the whole Island
 1 gram - {product.price} BATH'''
 
     if language == "EN":
-        return f'''RU USER'S VIEW:\
+        if pageOfLanguage == 1:
+            return f'''RU USER'S VIEW:\n
         
 {product.name}
 
@@ -1751,9 +1754,9 @@ Delivery on the whole Island
 
 Доставка по всему острову
 1 грамм - {product.price} BATH
-
-
-EN USER'S VIEW:\n
+'''
+        if pageOfLanguage == 2:
+            return f'''EN USER'S VIEW:\n
 
 {product.name}
 
@@ -1762,9 +1765,10 @@ EN USER'S VIEW:\n
 Delivery on the whole Island
 1 gram - {product.price} BATH'''
 
-def adminProductMenu(idOrder, language):
+def adminProductMenu1(idOrder, language):
     if language == "RU":
         return types.InlineKeyboardMarkup(row_width=1).add(
+            types.InlineKeyboardButton("Изменить язык просмотра", callback_data=f"changePageLanguageTo2#{idOrder}"),
             types.InlineKeyboardButton("Изменить название", callback_data=f"adminChangeName#{idOrder}"),
             types.InlineKeyboardButton("Изменить RU описание", callback_data=f"adminChangeInfoAboutRU#{idOrder}"),
             types.InlineKeyboardButton("Изменить EN описание", callback_data=f"adminChangeInfoAboutEN#{idOrder}"),
@@ -1775,6 +1779,7 @@ def adminProductMenu(idOrder, language):
         )
     if language == "EN":
         return types.InlineKeyboardMarkup(row_width=1).add(
+            types.InlineKeyboardButton("Change language view", callback_data=f"changePageLanguageTo2#{idOrder}"),
             types.InlineKeyboardButton("Change name", callback_data=f"adminChangeName#{idOrder}"),
             types.InlineKeyboardButton("Change RU text", callback_data=f"adminChangeInfoAboutRU#{idOrder}"),
             types.InlineKeyboardButton("Change EN text", callback_data=f"adminChangeInfoAboutEN#{idOrder}"),
@@ -1783,7 +1788,29 @@ def adminProductMenu(idOrder, language):
             types.InlineKeyboardButton("Delete item", callback_data=f"adminDeleteProduct#{idOrder}"),
             types.InlineKeyboardButton("Back", callback_data="adminCatalogFromMedia")
         )
-
+def adminProductMenu2(idOrder, language):
+    if language == "RU":
+        return types.InlineKeyboardMarkup(row_width=1).add(
+            types.InlineKeyboardButton("Изменить язык просмотра", callback_data=f"changePageLanguageTo1#{idOrder}"),
+            types.InlineKeyboardButton("Изменить название", callback_data=f"adminChangeName#{idOrder}"),
+            types.InlineKeyboardButton("Изменить RU описание", callback_data=f"adminChangeInfoAboutRU#{idOrder}"),
+            types.InlineKeyboardButton("Изменить EN описание", callback_data=f"adminChangeInfoAboutEN#{idOrder}"),
+            types.InlineKeyboardButton("Изменить цену", callback_data=f"adminChangePrice#{idOrder}"),
+            types.InlineKeyboardButton("Изменить медиа", callback_data=f"adminChangeMedia#{idOrder}"),
+            types.InlineKeyboardButton("Удалить товар", callback_data=f"adminDeleteProduct#{idOrder}"),
+            types.InlineKeyboardButton("Назад", callback_data="adminCatalogFromMedia")
+        )
+    if language == "EN":
+        return types.InlineKeyboardMarkup(row_width=1).add(
+            types.InlineKeyboardButton("Change language view", callback_data=f"changePageLanguageTo1#{idOrder}"),
+            types.InlineKeyboardButton("Change name", callback_data=f"adminChangeName#{idOrder}"),
+            types.InlineKeyboardButton("Change RU text", callback_data=f"adminChangeInfoAboutRU#{idOrder}"),
+            types.InlineKeyboardButton("Change EN text", callback_data=f"adminChangeInfoAboutEN#{idOrder}"),
+            types.InlineKeyboardButton("Change price", callback_data=f"adminChangePrice#{idOrder}"),
+            types.InlineKeyboardButton("Change media", callback_data=f"adminChangeMedia#{idOrder}"),
+            types.InlineKeyboardButton("Delete item", callback_data=f"adminDeleteProduct#{idOrder}"),
+            types.InlineKeyboardButton("Back", callback_data="adminCatalogFromMedia")
+        )
 def changeMediaText(language):
     if language == "RU":
         return "Выберите вложение"
@@ -1820,15 +1847,15 @@ def adminAddProductNameMenu(language):
         return types.InlineKeyboardMarkup().add(types.InlineKeyboardButton("Reset", callback_data="resetProduct"))
 def adminAddProductTextRU(language):
     if language == "RU":
-        return 'Введите описание товара на русском (не более 400 символов):'
+        return 'Введите описание товара на русском (не более 900 символов):'
     if language == "EN":
-        return 'Enter product description in Russian (no more than 400 characters)'
+        return 'Enter product description in Russian (no more than 900 characters)'
 
 def adminAddProductTextEN(language):
     if language == "RU":
-        return 'Введите описание товара на английском (не более 400 символов):'
+        return 'Введите описание товара на английском (не более 900 символов):'
     if language == "EN":
-        return 'Enter product description in English (no more than 400 characters)'
+        return 'Enter product description in English (no more than 900 characters)'
 
 def adminAddProductPrice(language):
     if language == "RU":
@@ -1895,15 +1922,32 @@ def adminAddProductMediaMenu(language):
             # types.InlineKeyboardButton("Media group", callback_data=f"attachMediaGroupToProduct"),
             types.InlineKeyboardButton("Reset", callback_data="resetProduct")
         )
-def adminFinalProductMenu(language):
+def adminFinalProductMenu1(language):
     if language == "RU":
         return types.InlineKeyboardMarkup(row_width=1).add(
+            types.InlineKeyboardButton("Изменить язык просмотра", callback_data="switchViewNewItemToPageOfLanguageTo2"),
             types.InlineKeyboardButton("Добавить в начало", callback_data="addProductInStart"),
             types.InlineKeyboardButton("Добавить в конец", callback_data="addProductInFinish"),
             types.InlineKeyboardButton("Сбросить", callback_data="resetProduct")
         )
     if language == "EN":
         return types.InlineKeyboardMarkup(row_width=1).add(
+            types.InlineKeyboardButton("Change language view", callback_data="switchViewNewItemToPageOfLanguageTo2"),
+            types.InlineKeyboardButton("Add to start", callback_data="addProductInStart"),
+            types.InlineKeyboardButton("Add to end", callback_data="addProductInFinish"),
+            types.InlineKeyboardButton("Reset", callback_data="resetProduct")
+        )
+def adminFinalProductMenu2(language):
+    if language == "RU":
+        return types.InlineKeyboardMarkup(row_width=1).add(
+            types.InlineKeyboardButton("Изменить язык просмотра", callback_data="switchViewNewItemToPageOfLanguageTo1"),
+            types.InlineKeyboardButton("Добавить в начало", callback_data="addProductInStart"),
+            types.InlineKeyboardButton("Добавить в конец", callback_data="addProductInFinish"),
+            types.InlineKeyboardButton("Сбросить", callback_data="resetProduct")
+        )
+    if language == "EN":
+        return types.InlineKeyboardMarkup(row_width=1).add(
+            types.InlineKeyboardButton("Change language view", callback_data="switchViewNewItemToPageOfLanguageTo1"),
             types.InlineKeyboardButton("Add to start", callback_data="addProductInStart"),
             types.InlineKeyboardButton("Add to end", callback_data="addProductInFinish"),
             types.InlineKeyboardButton("Reset", callback_data="resetProduct")

@@ -1,9 +1,5 @@
 from app.config import db, app
 
-# import os,sys
-# sys.path.insert(1, os.path.join(sys.path[0], '../'))
-# from config import app, db
-
 class Admin(db.Model):
     __tablename__ = 'admin'
 
@@ -32,7 +28,7 @@ def getAdmins():
             return Admin.query.filter(Admin.id is not None).all()
 
     except Exception as e:
-        return print(e, "\ngetAllActiveOrders error")
+        return print(e, "\ngetAdmins error")
 def checkAdmin(chatId: int):
     try:
         with app.app_context():
@@ -51,4 +47,3 @@ def delAdmin(chatId: int):
             db.session.commit()
     except Exception as e:
         return print(e, "\ndelAdmin error")
-
