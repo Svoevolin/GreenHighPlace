@@ -1692,20 +1692,31 @@ def adminSliderShop(page, products, language):
 
         lookProduct = types.InlineKeyboardButton('{}'.format(nameOfProducts[page - 1]),
                                                  callback_data='adminProductName#{}'.format(idOrders[page - 1]))
-        paginator.add_before(lookProduct)
+
+
 
 
         if language == "RU":
             toAddProduct = types.InlineKeyboardButton('Добавить товар', callback_data='adminAddProduct')
+            toDeleteProduct = types.InlineKeyboardButton(
+                'Удалить товар', callback_data=f'adminDeleteProduct#{idOrders[page - 1]}'
+            )
 
             toBackButton = types.InlineKeyboardButton('Назад', callback_data='toMainAdmin')
-            paginator.add_after(toBackButton, toAddProduct)
+            paginator.add_after(toBackButton, toDeleteProduct)
+            paginator.add_before(toAddProduct)
 
         if language == "EN":
             toAddProduct = types.InlineKeyboardButton('Add item', callback_data='adminAddProduct')
 
+            toDeleteProduct = types.InlineKeyboardButton(
+                'Delete item', callback_data=f'adminDeleteProduct#{idOrders[page - 1]}'
+            )
             toBackButton = types.InlineKeyboardButton('Back', callback_data='toMainAdmin')
-            paginator.add_after(toBackButton, toAddProduct)
+            paginator.add_after(toBackButton, toDeleteProduct)
+            paginator.add_before(toAddProduct)
+
+        paginator.add_before(lookProduct)
 
         return paginator.markup
 
