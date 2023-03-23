@@ -15,13 +15,9 @@ from tools import get_address
 import markups as mk
 import pytz
 
-
-
-
 import pathlib
 
 config = load_dotenv()
-
 
 adminPostSaleChecker = dict()
 adminAddProductChecker = dict()

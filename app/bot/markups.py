@@ -1,9 +1,18 @@
+import os
+
 from telebot import types
 from telegram_bot_pagination import InlineKeyboardPaginator
+from dotenv import load_dotenv
+
 from app.models import ProductModel as pm
 from app.models import CustomerModel as db
 from app.models import ActiveOrderModel as ao
+
+
+config = load_dotenv()
 hideMenu = types.ReplyKeyboardRemove()
+
+password = os.getenv('BotAdminPassword')
 
 # до меню профиль-купить
 
@@ -964,7 +973,7 @@ def deletedItemText(name, language):
 
 toAdminTextRU = "Администрирование"
 toAdminTextEN = "Administration"
-password = "123"
+
 
 def toEnterPasswordText(language):
     if language == "RU":
