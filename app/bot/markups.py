@@ -37,14 +37,16 @@ switchLanguage.add(languageEN, languageRU)
 
 def welcomeText(language: str):
     if language == "RU":
-        return '''Привет!
-Ты в крутом магазине на крутом острове
-Можешь сделать заказ и оформить доставку'''
+        return '''👋 Приветствую тебя в нашем телеграм боте от Green High Shop! 🌿🌿🌿
+🌿 У нас ты найдешь только лучшее качество за адекватные деньги и другие интересные товары.
+Чтобы мы могли точно определить адрес для доставки, не забудь отправить нам свою геолокацию 📍 или написать свой адрес вручную 📝
+Мы всегда рады помочь и ответить на любые вопросы! 💬'''
 
     if language == "EN":
-        return '''Hello!
-You are in the cool boshkiShop on cool Island
-You can make an order and do delivery'''
+        return '''👋 Welcome to our telegram bot from Green High Shop! 🌿🌿🌿
+🌿 We have only the best quality for adequate money and other interesting products.
+So we can pinpoint the exact address for delivery, don't forget to send us your geolocation 📍 or write your address manually 📝
+We're always happy to help and answer any questions! 💬'''
 
 
 def askLocation(language: str):
