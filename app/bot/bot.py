@@ -932,7 +932,10 @@ def language(call):
 
         if call.data.split('#')[0] == "adminDeleteProduct":
             idProduct = int(call.data.split('#')[1])
-            os.remove(pm.getMedia(idProduct))
+            try:
+                os.remove(pm.getMedia(idProduct))
+            except Exception:
+                pass
             pm.delProduct(idProduct)
 
             bot.answer_callback_query(callback_query_id=call.id,
